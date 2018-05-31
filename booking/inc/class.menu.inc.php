@@ -224,6 +224,12 @@
 							'url' => $GLOBALS['phpgw']->link('/index.php', array('menuaction' => 'booking.uireports.freetime')),
 							'image' => array('property', 'report'),
 						),
+						'free_time' => array
+							(
+							'text' => lang('Free time ahead'),
+							'url' => $GLOBALS['phpgw']->link('/index.php', array('menuaction' => 'booking.uireports.freetimeAhead')),
+							'image' => array('property', 'report'),
+						),
 						'add_generic' => array
 							(
 							'text' => 'TESTING::add_generic',

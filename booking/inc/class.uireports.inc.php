@@ -41,6 +41,7 @@
 			$reports[] = array('name' => lang('Participants Per Age Group Per Month'), 'url' => self::link(array(
 					'menuaction' => 'booking.uireports.participants')));
 			$reports[] = array('name' => lang('Free time'), 'url' => self::link(array('menuaction' => 'booking.uireports.freetime')));
+			$reports[] = array('name' => lang('Free time ahead'), 'url' => self::link(array('menuaction' => 'booking.uireports.freetimeAhead')));
 
 			$tabs = array();
 			$tabs['generic'] = array('label' => lang('Reports'), 'link' => '#reports');
