@@ -1,4 +1,5 @@
 <?php
+	ini_set('memory_limit', '-1');
 	$GLOBALS['phpgw_info']['server']['no_jscombine']=true;
 	phpgw::import_class('phpgwapi.jquery');
 	phpgw::import_class('phpgwapi.template_portico');
@@ -84,7 +85,7 @@ JS;
 	
 	$javascripts[] = "/phpgwapi/templates/bookingfrontend/js/minid.js";
         
-        $logoimg = "/phpgwapi/templates/aalesund/img/Logoforslag_lilla.png";
+        $logoimg = "/phpgwapi/templates/aalesund/img/aalesund_logo.png";
         
         $bootstrapmainjs = "/phpgwapi/templates/aalesund/bootstrap/js/bootstrap.min.js";
         $bootstrapjs= "/phpgwapi/templates/aalesund/bootstrap/js/bootstrap.bundle.min.js";
@@ -216,11 +217,12 @@ JS;
 		'logofile'		=> $logofile_frontend,
 		'header_search_class'	=> 'hidden'//(isset($_GET['menuaction']) && $_GET['menuaction'] == 'bookingfrontend.uisearch.index' ? 'hidden' : '')
 	);
-                
-	// if ($manual !== null) 
+	
+	$manualURL = 'https://manual.aktiv-kommune.no/';
+	 if ($manualURL !== null) 
 	{
 		$tpl_vars['manual_text'] = lang('manual');
-		$tpl_vars['manual_url'] = $manual;
+		$tpl_vars['manual_url'] = $manualURL;
 	}
 //	$user = $GLOBALS['phpgw']->accounts->get( $GLOBALS['phpgw_info']['user']['id'] );
 //	_debug_array($user);
