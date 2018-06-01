@@ -21,22 +21,7 @@ and open the template in the editor.
        
         {css}
 
-        <script type="text/javascript">
-            <!--
-                var strBaseURL = '{str_base_url}';
-            //-->
-        </script>
-        
-        {javascript}
-        <script type="text/javascript" src="{samplejs}"></script>
-        <script type="text/javascript" src="{bootstrapjs}"></script>
-        <script type="text/javascript" src="{bootstrapmainjs}"></script>
-
-        <script type="text/javascript">
-        <!--
-            {win_on_events}
-            //-->
-        </script>
+        <script type="text/javascript" src="js/main.js"></script>        
 
     </head>
     <body class="">

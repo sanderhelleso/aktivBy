@@ -11,8 +11,13 @@
 		<title>{site_title}</title>
 		<link rel="icon" href="{img_icon}" type="image/x-ico">
 		<link rel="shortcut icon" href="{img_icon}">
+		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 		<!-- BEGIN stylesheet -->
         	<link href="{stylesheet_uri}" type="text/css" rel="StyleSheet">
+
+			<!-- Bootstrap CSS --- Download and remove CDN before release -->
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- END stylesheet -->
 
 		{css}
