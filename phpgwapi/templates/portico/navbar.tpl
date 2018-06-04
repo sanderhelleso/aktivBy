@@ -2,6 +2,11 @@
 		<div id="debug-navbar">
 		{debug}
 		</div>
+		
+		<div id="user">
+			<h5 id="userName"></h5>
+		</div>
+		<img id="userAvatar" src="phpgwapi/templates/portico/images/admin.png"></img>
 	<script type="text/javascript">
 		function logout()
 		{
@@ -74,7 +79,7 @@
 					</div>
 				</nav>
 
-			<div id="side_content" class="ui-layout-west" style="display: none;">
+			<div id="side_content" class="ui-layout-west">
 				<div class="layouheader">{user_fullname}</div>
 				<input type="text" id="navbar_search" value="" class="input" style="margin:0em auto 1em auto; display:block; padding:4px; border-radius:4px; border:1px solid silver;" />
 				<div id="navtreecontrol">
@@ -84,7 +89,8 @@
 				</div>
 
 
-				<div id="navbar" class="ui-layout-content" style="overflow: auto;"></div>
+				<div id="navbar" class="ui-layout-content" style="overflow: auto;">
+				</div>
 			</div>
 
 			<div class="ui-layout-east">

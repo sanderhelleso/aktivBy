@@ -19,6 +19,9 @@
 			// remove stubborn height from navbar
 			document.querySelector("nav").style.removeProperty("height");
 
+			// set name for logged in user
+			document.querySelector("#userName").innerHTML = document.querySelector(".layouheader").innerHTML;
+
 			// create icons for side menu
 			const adminIco = document.createElement("i");
 			adminIco.className = "fas fa-screwdriver sideIco";
