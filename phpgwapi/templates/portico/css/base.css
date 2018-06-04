@@ -189,6 +189,9 @@ ul.jqtree-tree .jqtree-toggler {
 /* MAIN CONTAINER */
 #top {
 	padding-left: 25px !important;
+	margin-bottom: 25px !important;
+	font-family: 'Raleway', sans-serif;
+	font-size: 40px;
 }
 
 #center_content {
@@ -204,12 +207,27 @@ ul.jqtree-tree .jqtree-toggler {
 }
 
 /* TOCT */
+.pageIco {
+	float: left;
+	margin-right: 15px;
+	color: #1D2671;
+}
+
+.parent {
+	padding-bottom: 30px;
+	padding-top: 15px;
+	border-bottom: 1px solid #e0e0e0;
+	width: 50%;
+}
+
 #center_content li {
 	list-style: none !important;
 }
 
 #center_content ul li span {
 	font-size: 30px !important;
+	margin-bottom: 10px !important;
+	font-family: 'Raleway', sans-serif;
 }
 
 #center_content ul li a span {

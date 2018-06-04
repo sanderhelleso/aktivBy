@@ -41,6 +41,11 @@
 					ele.remove();
 				});
 
+				// insert map icon into current page heading
+				let mapIco = document.createElement("i");
+				mapIco.className = "fas fa-thumbtack pageIco";
+				document.querySelector("#top").appendChild(mapIco);
+
 				/*// set bootstrap list styling to ul & li elements
 				const listEles = document.querySelectorAll("ul, li");
 				listEles.forEach(ele => {
