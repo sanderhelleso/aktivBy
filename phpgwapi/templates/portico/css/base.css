@@ -3,6 +3,10 @@
     outline: none;
 }
 
+.ui-layout-resizer {
+	display: none;
+}
+
 /* HEADER */
 nav {
 	height: 100px !important;
@@ -10,6 +14,7 @@ nav {
 	background-color: #fafafa;
 	border-radius: 0 !important;
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+	z-index: 100 !important;
 }
 
 #nav_menu {

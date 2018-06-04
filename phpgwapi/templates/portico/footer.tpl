@@ -34,6 +34,12 @@
 				sideItems[0].childNodes[0].childNodes[1].appendChild(adminIco);
 				sideItems[1].childNodes[0].childNodes[1].appendChild(bookingIco);
 				sideItems[2].childNodes[0].childNodes[1].appendChild(propertyIco);
+
+				// removes resizer
+				const resizeControllers = document.querySelectorAll(".ui-layout-resizer");
+				resizeControllers.forEach(ele => {
+					ele.remove();
+				});
 			}, 500);
 			
 		</script>
