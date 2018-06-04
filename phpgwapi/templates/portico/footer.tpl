@@ -12,6 +12,9 @@
 		<script>
 			document.getElementById("template_selector").classList.add("form-control");
 
+			// remove stubborn height from navbar
+			document.querySelector("nav").style.removeProperty("height");
+
 			// create icons for side menu
 			const adminIco = document.createElement("i");
 			adminIco.className = "fas fa-screwdriver sideIco";
@@ -20,6 +23,7 @@
 			const propertyIco = document.createElement("i");
 			propertyIco.className = "fas fa-home sideIco";
 
+			// set icons after elements have been loaded to page
 			setTimeout(function() {
 				const sideItems = document.getElementById("navbar").childNodes[0].children;
 				sideItems[0].childNodes[0].childNodes[1].appendChild(adminIco);

@@ -5,7 +5,7 @@
 
 /* HEADER */
 nav {
-	min-height: 100px;
+	height: 100px !important;
 	padding: 1%;
 	background-color: #fafafa;
 	border-radius: 0 !important;
