@@ -3,6 +3,7 @@
 		{debug}
 		</div>
 		
+		<p id="versjon">Aktivby versjon 2.0</p>
 		<div id="user">
 			<h5 id="userName"></h5>
 		</div>

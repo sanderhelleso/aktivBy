@@ -1,8 +1,5 @@
 			<div class="ui-layout-south">
 					<div class="body">
-						<div class="button-bar">
-							{powered_by}
-						</div>
 					</div>
 				</div>
 			</div>
@@ -43,6 +40,20 @@
 				resizeControllers.forEach(ele => {
 					ele.remove();
 				});
+
+				/*// set bootstrap list styling to ul & li elements
+				const listEles = document.querySelectorAll("ul, li");
+				listEles.forEach(ele => {
+					console.log(ele);
+					if (ele.tagName === "UL") {
+						ele.classList.add("list-group");	
+					}
+
+					else {
+						ele.classList.add("list-item");
+					}
+					
+				});*/
 			}, 500);
 			
 		</script>
