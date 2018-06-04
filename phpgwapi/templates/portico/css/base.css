@@ -52,6 +52,10 @@ nav ul li a {
 }
 
 /* SIDE CONTAINER */
+#navtreecontrol, .layouheader {
+	display: none;
+}
+
 #side_content {
 	padding-top: 15px !important;
 	background-color: #463f5e;
@@ -108,7 +112,12 @@ ul.jqtree-tree li.jqtree-selected > .jqtree-element {
 }
 
 /* MAIN CONTAINER */
+#top {
+	padding-left: 25px !important;
+}
+
 #center_content {
 	padding-top: 15px !important;
+	padding-left: 50px !important;
 	overflow-y: scroll;
 }

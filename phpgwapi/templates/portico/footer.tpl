@@ -10,6 +10,10 @@
 		<div id="curtain"></div>
 		{javascript_end}
 		<script>
+			// enbale ES6
+			'use strict'
+
+			// add bootstrap class to template selector
 			document.getElementById("template_selector").classList.add("form-control");
 
 			// remove stubborn height from navbar
@@ -25,11 +29,12 @@
 
 			// set icons after elements have been loaded to page
 			setTimeout(function() {
+				// side menu options
 				const sideItems = document.getElementById("navbar").childNodes[0].children;
 				sideItems[0].childNodes[0].childNodes[1].appendChild(adminIco);
 				sideItems[1].childNodes[0].childNodes[1].appendChild(bookingIco);
 				sideItems[2].childNodes[0].childNodes[1].appendChild(propertyIco);
-			}, 500)
+			}, 500);
 			
 		</script>
 	</body>

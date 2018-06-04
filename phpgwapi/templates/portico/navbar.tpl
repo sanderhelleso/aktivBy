@@ -27,7 +27,6 @@
 		var current_node_id = {current_node_id};
 	</script>
 				<nav class="ui-layout-north navbar navbar-expand-lg navbar-light bg-light">
-				<i class="far fa-user"></i>
 					<a class="navbar-brand" href="#"><img src="phpgwapi/templates/portico/images/aalesund_logo.png"</img></a>
 					<div id="nav_menu">		
 						<ul class="list-inline">
