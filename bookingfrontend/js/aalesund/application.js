@@ -317,8 +317,66 @@ function removeCalendar() {
 function openCalendar() {
 	// determine wich calendar is opened by usings its ID as identifier | start OR end
 	const calendarType = this.id.split("_")[0]; // this line needs to be changed if the ID of the inputs are modified
-	if (calendarType === "start");
-	console.log(calendarType);
+	createCalendar(calendarType);
+}
+
+function createCalendar(type) {
+	// calendar element
+	const calendar = document.createElement("div");
+	calendar.className = "modal fade";
+	calendar.setAttribute("tabindex", "-1");
+	calendar.setAttribute("role", "dialog");
+
+	// main structure of the calendar
+	const calendarDialog = document.createElement("div");
+	calendarDialog.className = "modal-dialog";
+	calendarDialog.setAttribute("role", "document");
+
+	// content of the calendar
+	const calendarContent = document.createElement("div");
+	calendarContent.className = "modal-content";
+
+	// calendar header
+	const calendarHeader = document.createElement("div");
+	calendarHeader.className = "modal-header";
+	
+	// heading of the calendar
+	const calendarHeading = document.createElement("h1");
+	calendarHeading.className = "modal-title";
+	calendarHeading.innerHTML = type;
+
+	// exit modal button
+	const exitModalBtn = document.createElement("button");
+	exitModalBtn.className = "close";
+	exitModalBtn.setAttribute("type", "button");
+	exitModalBtn.setAttribute("data-dismiss", "modal");
+
+	const exitIcon = document.createElement("span");
+	exitIcon.setAttribute("aria-hidden", "true");
+	exitIcon.innerHTML = "&times;";
+
+	// append icon to button
+	exitModalBtn.appendChild(exitIcon);
+	// removes the modal on click | removes the element from the DOM after 1 sec to preserve fade animation
+	exitIcon.addEventListener("click", () => setTimeout(function(){
+		exitIcon.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
+	}, 1000));
+
+	// append elements to calendar header
+	calendarHeader.appendChild(calendarHeading);
+	calendarHeader.appendChild(exitModalBtn);
+
+	// append to calendar
+	calendarContent.appendChild(calendarHeader);
+	calendarDialog.appendChild(calendarContent);
+	calendar.appendChild(calendarDialog);
+
+	// append to DOM
+	document.querySelector("body").appendChild(calendar);
+
+	// open calendar
+	$(calendar).modal("show");
+
 }
 
 function populateTableChkResources(building_id, selection)
