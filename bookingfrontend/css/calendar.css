@@ -1,0 +1,43 @@
+.modal-header {
+    border-bottom: none !important;
+}
+
+.modal-header .modal-title {
+    font-family: 'Raleway', sans-serif;
+}
+
+.modal-header .modal-title span {
+    font-size: 16px;
+}
+
+.modal-body {
+    padding-top: 0;
+}
+
+.modal-body .topBorder {
+    height: 1px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #e0e0e0;
+}
+
+.calendarContainer {
+    width: 100%;
+    margin-left: 0 !important;
+}
+
+.calendarContainer .calendarDay {
+    width: 14.28571428571429%;
+    height: 50px;
+    text-align: center;
+    border: 1px solid black;
+    color: black;
+}
+
+.calendarContainer .calendarDay .dayNr {
+   margin-top: 10px;
+}
+
+.calendarContainer .weekend {
+    background-color: red !important;
+}

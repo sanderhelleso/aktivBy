@@ -311,6 +311,15 @@ function removeCalendar() {
 				script.remove();
 			}
 		});
+
+		// add calendar CSS file
+		const calendarCSS = document.createElement("link");
+		calendarCSS.type = "text/css";
+		calendarCSS.rel = "stylesheet";
+		calendarCSS.href = "http://aktivby.alesund.kommune.no/bookingfrontend/css/calendar.css";
+		let links = document.querySelectorAll("link");
+		document.querySelector("head").insertBefore(calendarCSS, links[links.length - 1]);
+		console.log(calendarCSS);
 	}, 1000);
 }
 
@@ -332,28 +341,45 @@ function createCalendar(type) {
 	calendarDialog.className = "modal-dialog";
 	calendarDialog.setAttribute("role", "document");
 
+	/****************** START MODAL HEADER **************/
 	// content of the calendar
 	const calendarContent = document.createElement("div");
 	calendarContent.className = "modal-content";
 
 	// calendar header
 	const calendarHeader = document.createElement("div");
-	calendarHeader.className = "modal-header";
+	calendarHeader.className = "modal-header container";
 	
 	// heading of the calendar
 	const calendarHeading = document.createElement("h1");
 	calendarHeading.className = "modal-title";
-	calendarHeading.innerHTML = type;
+
+	const calendarIntro = document.createElement("span");
+	calendarIntro.className = "calendarIntro";
+	if (type === "start") {
+		calendarHeading.innerHTML = "Fra dato";
+		calendarIntro.innerHTML = "<br>Vennligst velg datoen du vil booke fra";	
+	}
+
+	else {
+		calendarHeading.innerHTML = "Til dato";
+		calendarIntro.innerHTML = "<br>Vennligst velg datoen du vil booke til";	
+	}
+
+	// append intro to the heading as a span
+	calendarHeading.appendChild(calendarIntro);
 
 	// exit modal button
 	const exitModalBtn = document.createElement("button");
 	exitModalBtn.className = "close";
 	exitModalBtn.setAttribute("type", "button");
 	exitModalBtn.setAttribute("data-dismiss", "modal");
+	exitModalBtn.style.paddingTop = "0px";
 
 	const exitIcon = document.createElement("span");
 	exitIcon.setAttribute("aria-hidden", "true");
 	exitIcon.innerHTML = "&times;";
+	exitIcon.style.fontSize = "35px";
 
 	// append icon to button
 	exitModalBtn.appendChild(exitIcon);
@@ -362,12 +388,26 @@ function createCalendar(type) {
 		exitIcon.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
 	}, 1000));
 
+	// top border
+	const topBorder = document.createElement("div");
+	topBorder.className = "topBorder";
+
 	// append elements to calendar header
 	calendarHeader.appendChild(calendarHeading);
 	calendarHeader.appendChild(exitModalBtn);
 
+	/****************** END MODAL HEADER **************/
+
+	/****************** START MODAL BODY **************/
+	const calendarBody = document.createElement("div");
+	calendarBody.className = "modal-body";
+	calendarBody.appendChild(topBorder);
+	loadCalendar(calendarBody);
+	/****************** END MODAL BODY **************/
+
 	// append to calendar
 	calendarContent.appendChild(calendarHeader);
+	calendarContent.appendChild(calendarBody);
 	calendarDialog.appendChild(calendarContent);
 	calendar.appendChild(calendarDialog);
 
@@ -376,7 +416,51 @@ function createCalendar(type) {
 
 	// open calendar
 	$(calendar).modal("show");
+}
 
+function loadCalendar(parent) {
+	const calendarContainer = document.createElement("div");
+	calendarContainer.className = "calendarContainer row";
+
+	let dayCount = 0;
+	for (let i = 1; i < 30; i++) {
+
+		// create day with its day number
+		let day = document.createElement("div");
+		day.className = "calendarDay";
+		let dayNr = document.createElement("h5");
+		dayNr.className = "dayNr";
+		dayNr.innerHTML = i;
+
+		// remove left border
+		if (i === 1 || i === 8 || i === 15 || i === 22 || i === 29) {
+			day.style.borderLeft = "1px solid black";
+		}
+
+		else {
+			day.style.borderLeft = "none";
+		}
+
+		// remove top border
+		if (i > 7) {
+			day.style.borderTop = "none";
+		}
+
+		// filter out the weekends
+		dayCount++;
+		if (dayCount === 6 || dayCount === 7) {
+			day.classList.add("weekend");
+			if (dayCount === 7) {
+				dayCount = 0;
+			}
+		}
+
+		// append to the parent set as parameter
+		day.appendChild(dayNr);
+		calendarContainer.appendChild(day);
+	}
+
+	parent.appendChild(calendarContainer);
 }
 
 function populateTableChkResources(building_id, selection)
