@@ -8,6 +8,8 @@ $(document).ready(function ()
 		$("#end_date").val($("#start_date").val());
 	});
 
+	// remove jQuery calendar onload
+	removeCalendar();
 	JqueryPortico.autocompleteHelper(phpGWLink('bookingfrontend/', {menuaction: 'bookingfrontend.uibuilding.index'}, true), 'field_building_name', 'field_building_id', 'building_container');
 
 	$("#field_activity").change(function ()
@@ -274,6 +276,49 @@ else
 		var v = (n == 0) ? true : false;
 		return v;
 	}
+}
+
+function cloneInputs() {
+	// removes the event listeners from inputs by replacing them with a clone
+		const inputs = document.querySelectorAll("#start_date, #end_date");
+		inputs.forEach(input => {
+			let oldEle = input;
+			let newEle = oldEle.cloneNode(true);
+
+			// add new event to the cloned element
+			newEle.addEventListener("click", openCalendar);
+
+			// replace old element with its clone
+			oldEle.parentNode.replaceChild(newEle, oldEle);
+		});
+}
+
+function removeCalendar() {
+	// 1s delay due to elements are loaded via php include scripts
+	setTimeout(function(){
+		// replace the inputs with cloned elements of itself to remove stubborn events
+		cloneInputs();
+		// removes old calender @TODO: disable the jQuery calendar to start in the first place
+		const jQueryDatepicker = document.querySelectorAll(".xdsoft_datetimepicker");
+		jQueryDatepicker.forEach(datepicker => {
+			datepicker.remove();
+		});
+
+		// removes the jQuery script
+		const scripts = document.querySelectorAll("script");
+		scripts.forEach(script => {
+			if (script.src === "http://aktivby.alesund.kommune.no/phpgwapi/js/datetimepicker/js/jquery.datetimepicker.full.min.js") {
+				script.remove();
+			}
+		});
+	}, 1000);
+}
+
+function openCalendar() {
+	// determine wich calendar is opened by usings its ID as identifier | start OR end
+	const calendarType = this.id.split("_")[0]; // this line needs to be changed if the ID of the inputs are modified
+	if (calendarType === "start");
+	console.log(calendarType);
 }
 
 function populateTableChkResources(building_id, selection)
