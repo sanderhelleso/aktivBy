@@ -8,10 +8,19 @@ $(document).ready(function ()
 		$("#end_date").val($("#start_date").val());
 	});
 
-	const inputs = document.querySelectorAll("#start_date, #end_date");
-	inputs.forEach(input => {
-		input.setAttribute("disabled", true);
+	// temp disable input while calendar is preping
+	const inputs = document.querySelectorAll(".date-container");
+	inputs.forEach(ele => {
+		let getInputs = ele.querySelectorAll("input");
+		getInputs.forEach(ele => {
+			ele.setAttribute("disabled", true);
+		});
 	});
+
+	// add event to add date
+	document.querySelector("#add-date-link").addEventListener("click", () => setTimeout(function() {
+		cloneInputs();
+	}, 100));
 
 	// add stylesheets
 	addStyleSheets();
@@ -288,11 +297,15 @@ else
 
 function cloneInputs() {
 	// removes the event listeners from inputs by replacing them with a clone
-	document.querySelector("#add-date-link").remove();
-		const inputs = document.querySelectorAll("#start_date, #end_date");
-		inputs.forEach(input => {
-			let oldEle = input;
+	//document.querySelector("#add-date-link").remove();
+	const inputs = document.querySelectorAll(".date-container");
+	inputs.forEach(ele => {
+		console.log(ele);
+		let getInputs = ele.querySelectorAll("input");
+		getInputs.forEach(ele => {
+			let oldEle = ele;
 			oldEle.removeAttribute("disabled", true);
+			oldEle.classList.add("cloned");
 
 			let newEle = oldEle.cloneNode(true);
 
@@ -301,7 +314,8 @@ function cloneInputs() {
 
 			// replace old element with its clone
 			oldEle.parentNode.replaceChild(newEle, oldEle);
-		});
+		})
+	});
 }
 
 function removeCalendar() {
@@ -342,9 +356,23 @@ function addStyleSheets() {
 	document.querySelector("head").insertBefore(fontAwsome, links[links.length - 1]);
 }
 
+// vars to hold selected input
+let selectedInputStart;
+let selectedInputEnd;
 function openCalendar() {
 	// determine wich calendar is opened by usings its ID as identifier | start OR end
-	const calendarType = this.id.split("_")[0]; // this line needs to be changed if the ID of the inputs are modified
+	let calendarType = this.id.split("_"); // this line needs to be changed if the ID of the inputs are modified
+	
+	if (calendarType[0] || calendarType[1] === "start") {
+		calendarType = "start";
+		selectedInputStart = this;
+		selectedInputEnd = this.parentElement.parentElement.childNodes[2].childNodes[1];
+	}
+
+	else {
+		selectedInputStart = this.parentElement.parentElement.childNodes[1].childNodes[1];
+		selectedInputEnd = this;
+	}
 	createCalendar(calendarType);
 }
 
@@ -507,11 +535,13 @@ function removeModal() {
 	}, 500);
 }
 
-
+// vars for date selection
 const now = new Date();
 let currentMonth = now.getMonth() + 2;
 let currentYear = new Date().getFullYear();
 let mode;
+
+// load up the calendar and display stats
 function loadCalendar() {
 	// removes all old elements before recreating
 	const oldCalender = document.querySelectorAll(".calendarContainer");
@@ -541,7 +571,6 @@ function loadCalendar() {
 	}
 
 	let dayCount = 0;
-	const days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 	const months = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
 
 	const daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
@@ -550,7 +579,7 @@ function loadCalendar() {
 	console.log(currentYear);
 
 	// display current month
-	document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='time'><span></span><span id='timeSplitter'>:</span><span></span></span>";
+	document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
 
 	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
 
@@ -592,7 +621,7 @@ function loadCalendar() {
 	const hourSlider = document.createElement("input");
 	hourSlider.setAttribute("type", "range");
 	hourSlider.setAttribute("min", 0);
-	hourSlider.setAttribute("max", 24);
+	hourSlider.setAttribute("max", 23);
 	hourSlider.className = "slider";
 	hourSlider.id = "hourSlider";
 
@@ -639,7 +668,8 @@ function slider() {
 	// get elements and values
 	const hour = document.querySelector("#hourSlider");
 	const min = document.querySelector("#minSlider");
-	const output = document.querySelector(".time");
+	const output = document.querySelector(".clock");
+	console.log(output);
 
 	// set values to current time
 	hour.value = now.getHours();
@@ -717,14 +747,15 @@ function setTime() {
 	const formatedDate = dd + "/" + mm + "/" + yyyy + " " + hour + ":" + min;
 	// check for input to pass data
 	const selected = document.querySelector(".modal-title").innerHTML.split(" ")[0].toLowerCase(); // fra / til
-	const startDate = document.querySelector("#start_date");
-	const endDate = document.querySelector("#end_date");
+	const startDate = selectedInputStart;
+	const endDate = selectedInputEnd;
 	if (selected === "fra") {
 		selectedToTime = selectedTime;
 		if (selectedToTime < selectedFromTime) {
 			document.querySelector("#calendarError").innerHTML = "Fra tid er mindre en til tid, vennligst velg en ny dato";
 			return;
 		}
+
 		startDate.value = formatedDate;
 
 		if (endDate.value === "") {
