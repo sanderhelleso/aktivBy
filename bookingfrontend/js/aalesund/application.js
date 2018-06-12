@@ -370,10 +370,12 @@ function createCalendar(type) {
 	calendarIntro.className = "calendarIntro";
 	if (type === "start") {
 		calendarHeading.innerHTML = "Fra dato";
+		selectedToTime = 0;
 	}
 
 	else {
 		calendarHeading.innerHTML = "Til dato";
+		selectedFromTime = 0;
 	}
 
 	// append intro to the heading as a span
@@ -692,7 +694,7 @@ function setTime() {
 	const selectedTime = new Date(yyyy, currentMonth - 1, dd, hour, min, sec + 1).getTime();
 	console.log(now.getTime());
 	console.log(selectedTime);
-	if (selectedTime < now.getTime() && selectedFromTime <= selectedTime) {
+	if (selectedTime < now.getTime()) {
 		document.querySelector("#calendarError").innerHTML = "Man ikke kan ikke booke tilbake i tid, vennligst velg en ny dato";
 		return;
 	}
@@ -704,8 +706,12 @@ function setTime() {
 	const startDate = document.querySelector("#start_date");
 	const endDate = document.querySelector("#end_date");
 	if (selected === "fra") {
-		startDate.value = formatedDate;
 		selectedToTime = selectedTime;
+		if (selectedToTime < selectedFromTime) {
+			document.querySelector("#calendarError").innerHTML = "Fra tid er mindre en til tid, vennligst velg en ny dato";
+			return;
+		}
+		startDate.value = formatedDate;
 
 		if (endDate.value === "") {
 			setTimeout(function() {
@@ -716,7 +722,7 @@ function setTime() {
 
 	else {
 		selectedFromTime = selectedTime;
-		if (selectedFromTime <= selectedToTime) {
+		if (selectedFromTime < selectedToTime) {
 			document.querySelector("#calendarError").innerHTML = "Til tid er mindre en fra tid, vennligst velg en ny dato";
 			return;
 		}
