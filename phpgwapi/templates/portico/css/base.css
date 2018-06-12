@@ -83,7 +83,7 @@ nav ul li a {
 	background-repeat: no-repeat;
 
 	z-index: -1337;
-	max-width: 325px;
+	width: 325px !important;
 	-webkit-box-shadow: 4.5px 0 2px -2px #bdbdbd;
 	box-shadow: 4.5px 0 2px -2px #bdbdbd;
 }
@@ -154,7 +154,7 @@ ul.jqtree-tree .jqtree-toggler {
 	z-index: 1000;
 	max-width: 100px;
 	max-height: 100px;
-	margin-left: 110px;
+	margin-left: 120px;
 	border-radius: 50%;
 	background: #C33764;  /* fallback for old browsers */
 	background: -webkit-linear-gradient(to bottom, #1D2671, #C33764);  /* Chrome 10-25, Safari 5.1-6 */
@@ -180,7 +180,7 @@ ul.jqtree-tree .jqtree-toggler {
 	color: white;
 	z-index: 1337;
 	text-align: center;
-	margin-left: 80px;
+	margin-left: 90px;
 	font-size: 12px;
 	font-family: 'Raleway', sans-serif;
 	letter-spacing: 2px;
@@ -220,7 +220,7 @@ ul.jqtree-tree .jqtree-toggler {
 	width: 50%;
 }
 
-#center_content li {
+#center_content #menu {
 	list-style: none !important;
 }
 
@@ -232,4 +232,25 @@ ul.jqtree-tree .jqtree-toggler {
 
 #center_content ul li a span {
 	font-size: 16px !important;
+}
+
+/*********** BOOKING ****************/
+#toolbar {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	margin-top: 20px;
+}
+
+#toolbar .pure-button {
+	background-color: #c33764 !important;
+	transition: all 0.3s;
+}
+
+#toolbar .pure-button:hover {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#datatable-container_wrapper {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	background-color: rgba(255, 255, 255, 0.9);
+	padding: 2%;
 }
