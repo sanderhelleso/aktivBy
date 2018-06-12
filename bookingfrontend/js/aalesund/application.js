@@ -300,7 +300,6 @@ function cloneInputs() {
 	//document.querySelector("#add-date-link").remove();
 	const inputs = document.querySelectorAll(".date-container");
 	inputs.forEach(ele => {
-		console.log(ele);
 		let getInputs = ele.querySelectorAll("input");
 		getInputs.forEach(ele => {
 			let oldEle = ele;
@@ -363,16 +362,31 @@ function openCalendar() {
 	// determine wich calendar is opened by usings its ID as identifier | start OR end
 	let calendarType = this.id.split("_"); // this line needs to be changed if the ID of the inputs are modified
 	
-	if (calendarType[0] || calendarType[1] === "start") {
+	if (calendarType[0] === "start") {
+		calendarType = "start";
+		selectedInputStart = this;
+		selectedInputEnd = this.parentElement.parentElement.childNodes[2].childNodes[2];
+	}
+
+	else if (calendarType[0] === "end") {
+		calendarType = "end";
+		selectedInputStart = this.parentElement.parentElement.childNodes[2].childNodes[2];
+		selectedInputEnd = this;
+	}
+
+	else if (calendarType[1] === "start") {
 		calendarType = "start";
 		selectedInputStart = this;
 		selectedInputEnd = this.parentElement.parentElement.childNodes[2].childNodes[1];
 	}
 
-	else {
+	else if (calendarType[1] === "end") {
+		calendarType = "end";
 		selectedInputStart = this.parentElement.parentElement.childNodes[1].childNodes[1];
 		selectedInputEnd = this;
 	}
+
+	console.log(selectedInputEnd);
 	createCalendar(calendarType);
 }
 
@@ -669,7 +683,6 @@ function slider() {
 	const hour = document.querySelector("#hourSlider");
 	const min = document.querySelector("#minSlider");
 	const output = document.querySelector(".clock");
-	console.log(output);
 
 	// set values to current time
 	hour.value = now.getHours();
@@ -730,17 +743,24 @@ function setTime() {
 	}
 
 	const yyyy = currentYear;
-	const hour = document.querySelector("#hourSlider").value;
-	const min = document.querySelector("#minSlider").value;
+	let hour = document.querySelector("#hourSlider").value;
+	let min = document.querySelector("#minSlider").value;
 
 	// check for valid date
 	const sec = now.getSeconds();
 	const selectedTime = new Date(yyyy, currentMonth - 1, dd, hour, min, sec + 1).getTime();
-	console.log(now.getTime());
-	console.log(selectedTime);
+
 	if (selectedTime < now.getTime()) {
 		document.querySelector("#calendarError").innerHTML = "Man ikke kan ikke booke tilbake i tid, vennligst velg en ny dato";
 		return;
+	}
+
+	if (hour < 10) {
+		hour = "0" + hour;
+	}
+
+	if (min < 10) {
+		min = "0" + min;
 	}
 
 	// formated date
@@ -751,32 +771,42 @@ function setTime() {
 	const endDate = selectedInputEnd;
 	if (selected === "fra") {
 		selectedToTime = selectedTime;
+		console.log(selectedToTime);
+		console.log(selectedFromTime);
 		if (selectedToTime < selectedFromTime) {
 			document.querySelector("#calendarError").innerHTML = "Fra tid er mindre en til tid, vennligst velg en ny dato";
 			return;
 		}
 
-		startDate.value = formatedDate;
+		else {
+			// set value
+			startDate.value = formatedDate;
 
-		if (endDate.value === "") {
-			setTimeout(function() {
-				endDate.click();
-			}, 750);
+			if (endDate.value === "") {
+				setTimeout(function() {
+					endDate.click();
+				}, 750);
+			}
 		}
 	}
 
 	else {
+		console.log(123);
 		selectedFromTime = selectedTime;
-		if (selectedFromTime < selectedToTime) {
+		if (selectedFromTime > selectedToTime) {
+			// set value
+			endDate.value = formatedDate;
+
+			if (startDate.value === "") {
+				setTimeout(function() {
+					startDate.click();
+				}, 750);
+			}
+		}
+
+		else {
 			document.querySelector("#calendarError").innerHTML = "Til tid er mindre en fra tid, vennligst velg en ny dato";
 			return;
-		}
-		endDate.value = formatedDate;
-
-		if (startDate.value === "") {
-			setTimeout(function() {
-				startDate.click();
-			}, 750);
 		}
 	}
 
