@@ -346,10 +346,11 @@ function createCalendar(type) {
 	calendar.className = "modal fade";
 	calendar.setAttribute("tabindex", "-1");
 	calendar.setAttribute("role", "dialog");
+	calendar.setAttribute("data-backdrop", "static");
 
 	// main structure of the calendar
 	const calendarDialog = document.createElement("div");
-	calendarDialog.className = "modal-dialog";
+	calendarDialog.className = "modal-dialog modal-dialog-centered";
 	calendarDialog.setAttribute("role", "document");
 
 	/****************** START MODAL HEADER **************/
@@ -369,12 +370,10 @@ function createCalendar(type) {
 	calendarIntro.className = "calendarIntro";
 	if (type === "start") {
 		calendarHeading.innerHTML = "Fra dato";
-		calendarIntro.innerHTML = "<br>Vennligst velg datoen du vil booke fra";	
 	}
 
 	else {
 		calendarHeading.innerHTML = "Til dato";
-		calendarIntro.innerHTML = "<br>Vennligst velg datoen du vil booke til";	
 	}
 
 	// append intro to the heading as a span
@@ -396,7 +395,7 @@ function createCalendar(type) {
 	exitModalBtn.appendChild(exitIcon);
 
 	// removes the modal on click
-	exitIcon.addEventListener("click", () => removeModal());
+	exitModalBtn.addEventListener("click", () => removeModal());
 
 	// top border
 	const topBorder = document.createElement("div");
@@ -447,14 +446,14 @@ function createCalendar(type) {
 	calendarFooter.className = "modal-footer";
 
 	const cancelBtn = document.createElement("button");
-	cancelBtn.className = "btn btn-secondary";
+	cancelBtn.className = "btn calendarCancel";
 	cancelBtn.setAttribute("type", "button");
 	cancelBtn.setAttribute("data-dismiss", "modal");
 	cancelBtn.innerHTML = "Avbryt";
 	cancelBtn.addEventListener("click", () => removeModal());
 
 	const confirmBtn = document.createElement("button");
-	confirmBtn.className = "btn btn-primary";
+	confirmBtn.className = "btn calendarConfirm";
 	confirmBtn.setAttribute("type", "button");
 	confirmBtn.setAttribute("data-dismiss", "modal");
 	confirmBtn.innerHTML = "Bekreft";
@@ -477,10 +476,6 @@ function createCalendar(type) {
 	// open calendar
 	loadCalendar();
 	$(calendar).modal("show");
-
-	// remove calendar on backdrop click
-	calendar.addEventListener("click", () => removeModal());
-	
 }
 
 //removes the element from the DOM after 0.5 sec to preserve fade animation
@@ -490,6 +485,10 @@ function removeModal() {
 		modals.forEach(modal =>  {
 			modal.remove();
 		});
+		
+		currentMonth =  new Date().getMonth() + 2;
+		currentYear = new Date().getFullYear();
+		mode = false;
 	}, 500);
 }
 
@@ -512,7 +511,7 @@ function loadCalendar() {
 	// update year and month
 	if (mode) {
 		currentMonth++;
-		if (currentMonth === 12) {
+		if (currentMonth === 13) {
 			currentMonth = 1;
 			currentYear++;
 		}
@@ -536,7 +535,7 @@ function loadCalendar() {
 	console.log(currentYear);
 
 	// display current month
-	document.querySelector("#currentMonth").innerHTML = months[currentMonth - 1];
+	document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</month><br><span class='time'><span></span><span id='timeSplitter'>:</span><span></span></span>";
 
 	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
 
@@ -564,19 +563,95 @@ function loadCalendar() {
 		calendarContainer.appendChild(day);
 	}
 
+	const calendarSliders = document.createElement("div");
+	calendarSliders.className = "slideContainer";
+	const sliderHeading = document.createElement("h5");
+	sliderHeading.innerHTML = "Vennligst velg et klokkeslett";
+
+	const hourLabel = document.createElement("p");
+	hourLabel.innerHTML = "Time";
+
+	const hourSlider = document.createElement("input");
+	hourSlider.setAttribute("type", "range");
+	hourSlider.setAttribute("min", 0);
+	hourSlider.setAttribute("max", 24);
+	hourSlider.className = "slider";
+	hourSlider.id = "hourSlider";
+
+	const minSlider = document.createElement("input");
+	minSlider.setAttribute("type", "range");
+	minSlider.setAttribute("min", 0);
+	minSlider.setAttribute("max", 59);
+	minSlider.className = "slider";
+	minSlider.id = "minSlider";
+
+	const minLabel = document.createElement("p");
+	minLabel.innerHTML = "Minutt";
+	
+	calendarSliders.appendChild(sliderHeading);
+	calendarSliders.appendChild(hourLabel);
+	calendarSliders.appendChild(hourSlider);
+	calendarSliders.appendChild(minLabel);
+	calendarSliders.appendChild(minSlider);
+	calendarContainer.appendChild(calendarSliders);
+
 	parent.appendChild(calendarContainer);
+
+	// init slider
+	slider();
 }
 
+// select a date
 function selectDate() {
 	removeActive();
 	this.classList.add("activeDay");
+	document.querySelector(".date").innerHTML = this.innerHTML;
 }
 
+// remove active dates
 function removeActive() {
 	const activeDays = document.querySelectorAll(".activeDay");
 	activeDays.forEach(ele => {
 		ele.classList.remove("activeDay");
 	});
+}
+
+// init and display slider values
+function slider() {
+	// get elements and values
+	const hour = document.querySelector("#hourSlider");
+	const min = document.querySelector("#minSlider");
+	const output = document.querySelector(".time");
+
+	// set values to current time
+	hour.value = now.getHours();
+	min.value = now.getMinutes();
+	output.childNodes[0].innerHTML = hour.value;
+	output.childNodes[2].innerHTML = min.value;
+
+	/********** Update the current slider value **********/
+	// display selected hours
+	hour.oninput = function() {
+		if (hour.value < 10) {
+			output.childNodes[0].innerHTML = "0" + hour.value;
+		}
+
+		else {
+			output.childNodes[0].innerHTML = hour.value;
+		}
+	}
+
+	// display selected mins
+	min.oninput = function() {
+		if (min.value < 10) {
+			output.childNodes[2].innerHTML = "0" + min.value;
+		}
+
+		else {
+			output.childNodes[2].innerHTML = min.value;
+		}
+	}
+	
 }
 
 function populateTableChkResources(building_id, selection)
