@@ -1,3 +1,7 @@
+.show {
+    padding-right: none !important;
+}
+
 .modal-header {
     border-bottom: none !important;
 }
@@ -40,6 +44,8 @@
     font-size: 25px;
     color: #9e9e9e;
     font-weight: 100;
+    transition: all 0.3s;
+    opacity: 0.5;
 }
 
 .modal-body .nextMonth {
@@ -47,6 +53,14 @@
     font-size: 25px;
     color: #9e9e9e;
     font-weight: 100;
+    transition: all 0.3s;
+    opacity: 0.5;
+}
+
+.nextMonth:hover, .prevMonth:hover {
+    color: #c33764;
+    transform: scale(1.75);
+    opacity: 1;
 }
 
 .modal-body #currentMonth {
@@ -72,13 +86,15 @@
     transition: all 0.3s;
 }
 
+.calendarContainer .calendarDay:hover {
+    background-color: #eeeeee;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
 .calendarContainer .calendarDay h5 {
     font-size: 16px;
     font-weight: 600;
-}
-
-.calendarContainer .calendarDay:hover {
-    cursor: pointer;
 }
 
 .calendarContainer .activeDay {
@@ -87,6 +103,12 @@
     font-weight: 800;
     border-radius: 12px;
     transition: all 0.3s;
+    transform: scale(1.1);
+    z-index: 1337;
+}
+
+.calendarContainer .activeDay:hover {
+    background-color: transparent !important;
 }
 
 .calendarContainer .activeDay h5 {
@@ -116,51 +138,54 @@
 
 .calendarCancel {
     color: #919191;
+    transition: all 0.3s;
 }
 
 .calendarConfirm {
     background-color: #c33764;
     color: white;
+    transition: all 0.3s;
+}
+
+.calendarConfirm:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .slideContainer {
-    width: 100%; /* Width of the outside container */
+    width: 100%; 
 }
 
-/* The slider itself */
 .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
+    -webkit-appearance: none; 
     appearance: none;
-    width: 100%; /* Full-width */
-    height: 25px; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    width: 100%; 
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
     transition: opacity .2s;
 }
 
-/* Mouse-over effects */
 .slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
+    opacity: 1;
     cursor: pointer;
 }
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+ 
 .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
+    -webkit-appearance: none; 
     appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #c33764; /* Green background */
-    cursor: pointer; /* Cursor on hover */
+    width: 25px; 
+    height: 25px;
+    background: #c33764; 
+    cursor: pointer; 
 }
 
 .slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #c33764; /* Green background */
-    cursor: pointer; /* Cursor on hover */
+    width: 25px; 
+    height: 25px; 
+    background: #c33764; 
+    cursor: pointer; 
 }
 
 .slideContainer h5 {
@@ -193,4 +218,30 @@
 #calendarError {
     float: left;
     color: #ef5350;
+}
+
+/** phone **/
+@media only screen and (max-width: 767px) {
+    modal-body .prevMonth {
+        float: left;
+        font-size: 25px;
+        color: #9e9e9e;
+        font-weight: 100;
+        transition: all 0.3s;
+        opacity: 1;
+    }
+    
+    .modal-body .nextMonth {
+        float: right;
+        font-size: 25px;
+        color: #9e9e9e;
+        font-weight: 100;
+        transition: all 0.3s;
+        opacity: 1;
+    }
+
+    .nextMonth:hover, .prevMonth:hover {
+        transform: none;
+        color: #919191;
+    }
 }

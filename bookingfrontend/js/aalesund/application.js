@@ -8,6 +8,11 @@ $(document).ready(function ()
 		$("#end_date").val($("#start_date").val());
 	});
 
+	const inputs = document.querySelectorAll("#start_date, #end_date");
+	inputs.forEach(input => {
+		input.setAttribute("disabled", true);
+	});
+
 	// add stylesheets
 	addStyleSheets();
 
@@ -283,9 +288,12 @@ else
 
 function cloneInputs() {
 	// removes the event listeners from inputs by replacing them with a clone
+	document.querySelector("#add-date-link").remove();
 		const inputs = document.querySelectorAll("#start_date, #end_date");
 		inputs.forEach(input => {
 			let oldEle = input;
+			oldEle.removeAttribute("disabled", true);
+
 			let newEle = oldEle.cloneNode(true);
 
 			// add new event to the cloned element
@@ -420,6 +428,7 @@ function createCalendar(type) {
 	const prev = document.createElement("button");
 	prev.className = "prevMonth";
 	prev.innerHTML = "<i class='fas fa-chevron-left'></i>";
+
 	prev.addEventListener("click", function() {
 		mode = false;
 		loadCalendar();
@@ -635,8 +644,21 @@ function slider() {
 	// set values to current time
 	hour.value = now.getHours();
 	min.value = now.getMinutes();
-	output.childNodes[0].innerHTML = hour.value;
-	output.childNodes[2].innerHTML = min.value;
+	if (hour.value < 10) {
+		output.childNodes[0].innerHTML = "0" + hour.value;
+	}
+
+	else {
+		output.childNodes[0].innerHTML = hour.value;
+	}
+
+	if (min.value < 10) {
+		output.childNodes[2].innerHTML = "0" + min.value;
+	}
+
+	else {
+		output.childNodes[2].innerHTML = min.value;
+	}
 
 	/********** Update the current slider value **********/
 	// display selected hours
@@ -671,23 +693,15 @@ function setTime() {
 	if (dd < 10) {
 		dd = "0" + dd;
 	}
-	console.log(dd);
 
 	let mm = currentMonth;
 	if (mm < 10) {
 		mm = "0" + mm;
 	}
-	console.log(mm);
 
 	const yyyy = currentYear;
-	console.log(yyyy);
-
 	const hour = document.querySelector("#hourSlider").value;
-
 	const min = document.querySelector("#minSlider").value;
-
-	console.log(hour);
-	console.log(min);
 
 	// check for valid date
 	const sec = now.getSeconds();
