@@ -455,9 +455,13 @@ function createCalendar(type) {
 	const confirmBtn = document.createElement("button");
 	confirmBtn.className = "btn calendarConfirm";
 	confirmBtn.setAttribute("type", "button");
-	confirmBtn.setAttribute("data-dismiss", "modal");
 	confirmBtn.innerHTML = "Bekreft";
+	confirmBtn.addEventListener("click", () => setTime());
 
+	const errorMsg = document.createElement("p");
+	errorMsg.id = "calendarError";
+
+	calendarFooter.appendChild(errorMsg);
 	calendarFooter.appendChild(cancelBtn);
 	calendarFooter.appendChild(confirmBtn);
 
@@ -535,7 +539,7 @@ function loadCalendar() {
 	console.log(currentYear);
 
 	// display current month
-	document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</month><br><span class='time'><span></span><span id='timeSplitter'>:</span><span></span></span>";
+	document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='time'><span></span><span id='timeSplitter'>:</span><span></span></span>";
 
 	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
 
@@ -560,6 +564,9 @@ function loadCalendar() {
 
 		// append to the parent set as parameter
 		day.appendChild(dayNr);
+		if (dayNr.innerHTML == now.getDate()) {
+			dayNr.click();
+		}
 		calendarContainer.appendChild(day);
 	}
 
@@ -651,7 +658,80 @@ function slider() {
 			output.childNodes[2].innerHTML = min.value;
 		}
 	}
-	
+}
+
+// set the selected time
+let selectedToTime = 0;
+let selectedFromTime = 0;
+function setTime() {
+	// get the selected time
+	let dd = document.querySelector(".date").childNodes[0].innerHTML;
+	if (dd < 10) {
+		dd = "0" + dd;
+	}
+	console.log(dd);
+
+	let mm = currentMonth;
+	if (mm < 10) {
+		mm = "0" + mm;
+	}
+	console.log(mm);
+
+	const yyyy = currentYear;
+	console.log(yyyy);
+
+	const hour = document.querySelector("#hourSlider").value;
+
+	const min = document.querySelector("#minSlider").value;
+
+	console.log(hour);
+	console.log(min);
+
+	// check for valid date
+	const sec = now.getSeconds();
+	const selectedTime = new Date(yyyy, currentMonth - 1, dd, hour, min, sec + 1).getTime();
+	console.log(now.getTime());
+	console.log(selectedTime);
+	if (selectedTime < now.getTime() && selectedFromTime <= selectedTime) {
+		document.querySelector("#calendarError").innerHTML = "Man ikke kan ikke booke tilbake i tid, vennligst velg en ny dato";
+		return;
+	}
+
+	// formated date
+	const formatedDate = dd + "/" + mm + "/" + yyyy + " " + hour + ":" + min;
+	// check for input to pass data
+	const selected = document.querySelector(".modal-title").innerHTML.split(" ")[0].toLowerCase(); // fra / til
+	const startDate = document.querySelector("#start_date");
+	const endDate = document.querySelector("#end_date");
+	if (selected === "fra") {
+		startDate.value = formatedDate;
+		selectedToTime = selectedTime;
+
+		if (endDate.value === "") {
+			setTimeout(function() {
+				endDate.click();
+			}, 750);
+		}
+	}
+
+	else {
+		selectedFromTime = selectedTime;
+		if (selectedFromTime <= selectedToTime) {
+			document.querySelector("#calendarError").innerHTML = "Til tid er mindre en fra tid, vennligst velg en ny dato";
+			return;
+		}
+		endDate.value = formatedDate;
+
+		if (startDate.value === "") {
+			setTimeout(function() {
+				startDate.click();
+			}, 750);
+		}
+	}
+
+	// remove modal after setting time
+	document.querySelector(".calendarConfirm").setAttribute("data-dismiss", "modal");
+	removeModal();
 }
 
 function populateTableChkResources(building_id, selection)

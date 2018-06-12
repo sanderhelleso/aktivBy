@@ -108,7 +108,7 @@
 }
 
 .date h5 {
-    font-size: 45px;
+    font-size: 55px;
     font-weight: 600;
     color: #c33764;
     margin-bottom: 0;
@@ -188,4 +188,9 @@
     font-size: 40px;
     color: #c33764;
     font-weight: 600;
+}
+
+#calendarError {
+    float: left;
+    color: #ef5350;
 }
