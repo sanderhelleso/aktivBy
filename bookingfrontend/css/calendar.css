@@ -15,13 +15,44 @@
 }
 
 .modal-body .topBorder {
-    height: 1px;
+    height: 0px;
     width: 100%;
     margin: 0 auto;
     background-color: #e0e0e0;
 }
 
+.modal-body .navigationContainer {
+    margin-top: 5%;
+}
+
+.modal-body button {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.modal-body .prevMonth {
+    float: left;
+}
+
+.modal-body .nextMonth {
+    float: right;
+}
+
+.modal-body #currentMonth {
+    clear: none;
+    text-align: center;
+    margin: 0 auto;
+}
+
 .calendarContainer {
+    border-top: 1px solid black;
+    margin-top: 5%;
+    padding-top: 2%;
     width: 100%;
     margin-left: 0 !important;
 }
@@ -30,14 +61,36 @@
     width: 14.28571428571429%;
     height: 50px;
     text-align: center;
-    border: 1px solid black;
-    color: black;
+    color: #2E2E2E;
+    border: 2px solid white;
+    transition: all 0.3s;
+}
+
+.calendarContainer .calendarDay h5 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.calendarContainer .calendarDay:hover {
+    cursor: pointer;
+}
+
+.calendarContainer .activeDay {
+    border: 2px solid #66bb6a !important;
+    color: #66bb6a;
+    font-weight: 800;
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.calendarContainer .activeDay h5 {
+    font-weight: 800;
 }
 
 .calendarContainer .calendarDay .dayNr {
-   margin-top: 10px;
+   margin-top: 12.5px;
 }
 
 .calendarContainer .weekend {
-    background-color: red !important;
+   
 }

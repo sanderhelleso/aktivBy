@@ -8,6 +8,9 @@ $(document).ready(function ()
 		$("#end_date").val($("#start_date").val());
 	});
 
+	// add stylesheets
+	addStyleSheets();
+
 	// remove jQuery calendar onload
 	removeCalendar();
 	JqueryPortico.autocompleteHelper(phpGWLink('bookingfrontend/', {menuaction: 'bookingfrontend.uibuilding.index'}, true), 'field_building_name', 'field_building_id', 'building_container');
@@ -311,16 +314,24 @@ function removeCalendar() {
 				script.remove();
 			}
 		});
-
-		// add calendar CSS file
-		const calendarCSS = document.createElement("link");
-		calendarCSS.type = "text/css";
-		calendarCSS.rel = "stylesheet";
-		calendarCSS.href = "http://aktivby.alesund.kommune.no/bookingfrontend/css/calendar.css";
-		let links = document.querySelectorAll("link");
-		document.querySelector("head").insertBefore(calendarCSS, links[links.length - 1]);
-		console.log(calendarCSS);
 	}, 1000);
+}
+
+function addStyleSheets() {
+	// add calendar CSS file
+	const calendarCSS = document.createElement("link");
+	calendarCSS.type = "text/css";
+	calendarCSS.rel = "stylesheet";
+	calendarCSS.href = "http://aktivby.alesund.kommune.no/bookingfrontend/css/calendar.css";
+	let links = document.querySelectorAll("link");
+	document.querySelector("head").insertBefore(calendarCSS, links[links.length - 1]);
+
+	// add font awesome
+	const fontAwsome = document.createElement("link");
+	fontAwsome.type = "text/css";
+	fontAwsome.rel = "stylesheet";
+	fontAwsome.href = "https://use.fontawesome.com/releases/v5.0.13/css/all.css";
+	document.querySelector("head").insertBefore(fontAwsome, links[links.length - 1]);
 }
 
 function openCalendar() {
@@ -383,10 +394,9 @@ function createCalendar(type) {
 
 	// append icon to button
 	exitModalBtn.appendChild(exitIcon);
-	// removes the modal on click | removes the element from the DOM after 1 sec to preserve fade animation
-	exitIcon.addEventListener("click", () => setTimeout(function(){
-		exitIcon.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
-	}, 1000));
+
+	// removes the modal on click
+	exitIcon.addEventListener("click", () => removeModal());
 
 	// top border
 	const topBorder = document.createElement("div");
@@ -402,12 +412,62 @@ function createCalendar(type) {
 	const calendarBody = document.createElement("div");
 	calendarBody.className = "modal-body";
 	calendarBody.appendChild(topBorder);
-	loadCalendar(calendarBody);
+
+	const navigation = document.createElement("div");
+	navigation.className = "col sm navigationContainer";
+
+	const prev = document.createElement("button");
+	prev.className = "prevMonth";
+	prev.innerHTML = "<i class='fas fa-chevron-left'></i>";
+	prev.addEventListener("click", function() {
+		mode = false;
+		loadCalendar();
+	});
+
+	const next = document.createElement("button");
+	next.className = "nextMonth";
+	next.innerHTML = "<i class='fas fa-chevron-right'></i>";
+	next.addEventListener("click", function() {
+		mode = true;
+		loadCalendar();
+	});
+
+	const month = document.createElement("h4");
+	month.id = "currentMonth";
+
+	navigation.appendChild(prev);
+	navigation.appendChild(next);
+	navigation.appendChild(month);
+
+	calendarBody.appendChild(navigation);
 	/****************** END MODAL BODY **************/
+
+	/****************** START MODAL FOOTER **************/
+	const calendarFooter = document.createElement("div");
+	calendarFooter.className = "modal-footer";
+
+	const cancelBtn = document.createElement("button");
+	cancelBtn.className = "btn btn-secondary";
+	cancelBtn.setAttribute("type", "button");
+	cancelBtn.setAttribute("data-dismiss", "modal");
+	cancelBtn.innerHTML = "Avbryt";
+	cancelBtn.addEventListener("click", () => removeModal());
+
+	const confirmBtn = document.createElement("button");
+	confirmBtn.className = "btn btn-primary";
+	confirmBtn.setAttribute("type", "button");
+	confirmBtn.setAttribute("data-dismiss", "modal");
+	confirmBtn.innerHTML = "Bekreft";
+
+	calendarFooter.appendChild(cancelBtn);
+	calendarFooter.appendChild(confirmBtn);
+
+	/****************** END MODAL FOOTER **************/
 
 	// append to calendar
 	calendarContent.appendChild(calendarHeader);
 	calendarContent.appendChild(calendarBody);
+	calendarContent.appendChild(calendarFooter);
 	calendarDialog.appendChild(calendarContent);
 	calendar.appendChild(calendarDialog);
 
@@ -415,15 +475,70 @@ function createCalendar(type) {
 	document.querySelector("body").appendChild(calendar);
 
 	// open calendar
+	loadCalendar();
 	$(calendar).modal("show");
+
+	// remove calendar on backdrop click
+	calendar.addEventListener("click", () => removeModal());
+	
 }
 
-function loadCalendar(parent) {
+//removes the element from the DOM after 0.5 sec to preserve fade animation
+function removeModal() {
+	setTimeout(function() {
+		const modals = document.querySelectorAll(".modal");
+		modals.forEach(modal =>  {
+			modal.remove();
+		});
+	}, 500);
+}
+
+
+const now = new Date();
+let currentMonth = now.getMonth() + 2;
+let currentYear = new Date().getFullYear();
+let mode;
+function loadCalendar() {
+	// removes all old elements before recreating
+	const oldCalender = document.querySelectorAll(".calendarContainer");
+	oldCalender.forEach(ele => {
+		ele.remove();
+	});
+
+	const parent = document.querySelector(".modal-body");
 	const calendarContainer = document.createElement("div");
 	calendarContainer.className = "calendarContainer row";
+	
+	// update year and month
+	if (mode) {
+		currentMonth++;
+		if (currentMonth === 12) {
+			currentMonth = 1;
+			currentYear++;
+		}
+	}
+
+	else {
+		currentMonth--;
+		if (currentMonth === 0) {
+			currentMonth = 12;
+			currentYear--;
+		}
+	}
 
 	let dayCount = 0;
-	for (let i = 1; i < 30; i++) {
+	const days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+	const months = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
+
+	const daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+	console.log(currentMonth);
+	console.log(currentYear);
+
+	// display current month
+	document.querySelector("#currentMonth").innerHTML = months[currentMonth - 1];
+
+	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
 
 		// create day with its day number
 		let day = document.createElement("div");
@@ -432,19 +547,8 @@ function loadCalendar(parent) {
 		dayNr.className = "dayNr";
 		dayNr.innerHTML = i;
 
-		// remove left border
-		if (i === 1 || i === 8 || i === 15 || i === 22 || i === 29) {
-			day.style.borderLeft = "1px solid black";
-		}
-
-		else {
-			day.style.borderLeft = "none";
-		}
-
-		// remove top border
-		if (i > 7) {
-			day.style.borderTop = "none";
-		}
+		// add event to the day
+		day.addEventListener("click", selectDate);
 
 		// filter out the weekends
 		dayCount++;
@@ -461,6 +565,18 @@ function loadCalendar(parent) {
 	}
 
 	parent.appendChild(calendarContainer);
+}
+
+function selectDate() {
+	removeActive();
+	this.classList.add("activeDay");
+}
+
+function removeActive() {
+	const activeDays = document.querySelectorAll(".activeDay");
+	activeDays.forEach(ele => {
+		ele.classList.remove("activeDay");
+	});
 }
 
 function populateTableChkResources(building_id, selection)
