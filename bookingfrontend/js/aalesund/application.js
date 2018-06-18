@@ -2,6 +2,38 @@
 var building_id_selection = "";
 var regulations_select_all = "";
 
+/**
+ * detect IE
+ * returns version of IE or false, if browser is not Internet Explorer
+ */
+function detectIE() {
+    var ua = window.navigator.userAgent;
+
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+        // IE 10 or older => return version number
+        return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+    }
+
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        // IE 11 => return version number
+        var rv = ua.indexOf('rv:');
+        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+    }
+
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+       // Edge (IE 12+) => return version number
+       return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+    }
+
+    // other browser
+    return false;
+}
+
+const ie = detectIE();
+
 $(document).ready(function ()
 {
 	$("#start_date").change(function ()
@@ -336,14 +368,14 @@ function removeCalendar() {
 		// removes old calender @TODO: disable the jQuery calendar to start in the first place
 		var jQueryDatepicker = document.getElementsByClassName("xdsoft_datetimepicker");
 		for (var i = 0; i < jQueryDatepicker.length; i++) {
-			jQueryDatepicker[i].remove();
+			jQueryDatepicker[i].parentNode.removeChild(jQueryDatepicker[i]);
 		}
 
 		// removes the jQuery script
 		var scripts = document.querySelectorAll("script");
 		for (var i = 0; i < scripts.length; i++) {
 			if (scripts[i].src  === "http://aktivby.alesund.kommune.no/phpgwapi/js/datetimepicker/js/jquery.datetimepicker.full.min.js") {
-				scripts[i].remove();
+				scripts[i].parentNode.removeChild(scripts[i]);
 			}
 		}
 	}, 1000);
@@ -366,6 +398,10 @@ function addStyleSheets() {
 	document.querySelector("head").insertBefore(fontAwsome, links[links.length - 1]);
 }
 
+function isInArray(value, array) {
+	return array.indexOf(value) > -1;
+}
+
 // vars to hold selected input
 let selectedInputStart;
 let selectedInputEnd;
@@ -374,11 +410,12 @@ let currentContainer;
 function openCalendar() {
 	// determine wich calendar is opened by usings its ID as identifier | start OR end
 	let calendarType = this.id.split("_"); // this line needs to be changed if the ID of the inputs are modified
+	console.log(123);
 
 	// add container to array
 	currentContainer = this.parentElement.parentElement;
-	if (!dateContainers.includes(this.parentElement.parentElement)) {
-		dateContainers.push(this.parentElement.parentElement);
+	if (!isInArray(currentContainer, dateContainers)) {
+		dateContainers.push(currentContainer);
 		console.log(dateContainers);
 	}
 	
@@ -560,7 +597,7 @@ function removeModal() {
 	setTimeout(function() {
 		const modals = document.querySelectorAll(".modal");
 		for (var i = 0; i < modals.length; i++) {
-			modals[i].remove();
+			modals[i].parentNode.removeChild(modals[i]);
 		}
 		
 		currentMonth =  new Date().getMonth() + 2;
@@ -580,7 +617,7 @@ function loadCalendar() {
 	// removes all old elements before recreating
 	const oldCalender = document.querySelectorAll(".calendarContainer");
 	for (var i = 0; i < oldCalender.length; i++) {
-		oldCalender[i].remove();
+		oldCalender[i].parentNode.removeChild(oldCalender[i]);
 	}
 
 	const parent = document.querySelector(".modal-body");
@@ -656,15 +693,23 @@ function loadCalendar() {
 	hourSlider.setAttribute("type", "range");
 	hourSlider.setAttribute("min", 0);
 	hourSlider.setAttribute("max", 23);
-	hourSlider.className = "slider";
 	hourSlider.id = "hourSlider";
 
 	const minSlider = document.createElement("input");
 	minSlider.setAttribute("type", "range");
 	minSlider.setAttribute("min", 0);
 	minSlider.setAttribute("max", 59);
-	minSlider.className = "slider";
 	minSlider.id = "minSlider";
+
+	if (!ie) {
+		hourSlider.className = "slider";
+		minSlider.className = "slider";
+	}
+
+	else {
+		hourSlider.className = "ie-slider";
+		minSlider.className = "ie-slider";
+	}
 
 	const minLabel = document.createElement("p");
 	minLabel.innerHTML = "Minutt";
@@ -699,6 +744,7 @@ function removeActive() {
 
 // init and display slider values
 function slider() {
+	console.log("slider");
 	// get elements and values
 	const hour = document.querySelector("#hourSlider");
 	const min = document.querySelector("#minSlider");
@@ -725,24 +771,50 @@ function slider() {
 
 	/********** Update the current slider value **********/
 	// display selected hours
-	hour.oninput = function() {
-		if (hour.value < 10) {
-			output.childNodes[0].innerHTML = "0" + hour.value;
+	// check if IE browser
+	if (!ie) {
+		hour.oninput = function() {
+			if (hour.value < 10) {
+				output.childNodes[0].innerHTML = "0" + hour.value;
+			}
+	
+			else {
+				output.childNodes[0].innerHTML = hour.value;
+			}
 		}
 
-		else {
-			output.childNodes[0].innerHTML = hour.value;
+		// display selected mins
+		min.oninput = function() {
+			if (min.value < 10) {
+				output.childNodes[2].innerHTML = "0" + min.value;
+			}
+
+			else {
+				output.childNodes[2].innerHTML = min.value;
+			}
 		}
 	}
 
-	// display selected mins
-	min.oninput = function() {
-		if (min.value < 10) {
-			output.childNodes[2].innerHTML = "0" + min.value;
+	else {
+		hour.onchange = function() {
+			if (hour.value < 10) {
+				output.childNodes[0].innerHTML = "0" + hour.value;
+			}
+	
+			else {
+				output.childNodes[0].innerHTML = hour.value;
+			}
 		}
 
-		else {
-			output.childNodes[2].innerHTML = min.value;
+		// display selected mins
+		min.onchange = function() {
+			if (min.value < 10) {
+				output.childNodes[2].innerHTML = "0" + min.value;
+			}
+
+			else {
+				output.childNodes[2].innerHTML = min.value;
+			}
 		}
 	}
 }
