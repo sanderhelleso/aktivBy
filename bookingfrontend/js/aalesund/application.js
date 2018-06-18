@@ -1,3 +1,4 @@
+
 var building_id_selection = "";
 var regulations_select_all = "";
 
@@ -9,24 +10,33 @@ $(document).ready(function ()
 	});
 
 	// temp disable input while calendar is preping
-	const inputs = document.querySelectorAll(".date-container");
-	inputs.forEach(ele => {
+	var inputs = document.getElementsByClassName("date-container");
+	for (var i = 0; i < inputs.length; i++) {
+		var getInputs = inputs[i].querySelectorAll("input");
+		for (var x = 0; x < getInputs.length; x++) {
+			getInputs[x].setAttribute("disabled", true);
+		}
+	}
+	/*inputs.forEach(ele => {
 		let getInputs = ele.querySelectorAll("input");
 		getInputs.forEach(ele => {
 			ele.setAttribute("disabled", true);
 		});
-	});
+	});*/
 
 	// add event to add date
-	document.querySelector("#add-date-link").addEventListener("click", () => setTimeout(function() {
-		cloneInputs();
-	}, 100));
+	document.querySelector("#add-date-link").addEventListener("click", function() {
+		setTimeout(function() {
+			cloneInputs();
+		}, 100);
+	});
 
 	// add stylesheets
 	addStyleSheets();
 
 	// remove jQuery calendar onload
 	removeCalendar();
+
 	JqueryPortico.autocompleteHelper(phpGWLink('bookingfrontend/', {menuaction: 'bookingfrontend.uibuilding.index'}, true), 'field_building_name', 'field_building_id', 'building_container');
 
 	$("#field_activity").change(function ()
@@ -299,22 +309,23 @@ function cloneInputs() {
 	// removes the event listeners from inputs by replacing them with a clone
 	//document.querySelector("#add-date-link").remove();
 	const inputs = document.querySelectorAll(".date-container");
-	inputs.forEach(ele => {
-		let getInputs = ele.querySelectorAll("input");
-		getInputs.forEach(ele => {
-			let oldEle = ele;
+	for (var i = 0; i < inputs.length; i++) {
+		const getTime = inputs[i].querySelectorAll("input");
+		for (var x = 0; x < getTime.length; x++) {
+			const oldEle = getTime[x];
+
 			oldEle.removeAttribute("disabled", true);
 			oldEle.classList.add("cloned");
 
-			let newEle = oldEle.cloneNode(true);
+			const newEle = oldEle.cloneNode(true);
 
 			// add new event to the cloned element
 			newEle.addEventListener("click", openCalendar);
 
 			// replace old element with its clone
 			oldEle.parentNode.replaceChild(newEle, oldEle);
-		})
-	});
+		}
+	}
 }
 
 function removeCalendar() {
@@ -323,18 +334,18 @@ function removeCalendar() {
 		// replace the inputs with cloned elements of itself to remove stubborn events
 		cloneInputs();
 		// removes old calender @TODO: disable the jQuery calendar to start in the first place
-		const jQueryDatepicker = document.querySelectorAll(".xdsoft_datetimepicker");
-		jQueryDatepicker.forEach(datepicker => {
-			datepicker.remove();
-		});
+		var jQueryDatepicker = document.getElementsByClassName("xdsoft_datetimepicker");
+		for (var i = 0; i < jQueryDatepicker.length; i++) {
+			jQueryDatepicker[i].remove();
+		}
 
 		// removes the jQuery script
-		const scripts = document.querySelectorAll("script");
-		scripts.forEach(script => {
-			if (script.src === "http://aktivby.alesund.kommune.no/phpgwapi/js/datetimepicker/js/jquery.datetimepicker.full.min.js") {
-				script.remove();
+		var scripts = document.querySelectorAll("script");
+		for (var i = 0; i < scripts.length; i++) {
+			if (scripts[i].src  === "http://aktivby.alesund.kommune.no/phpgwapi/js/datetimepicker/js/jquery.datetimepicker.full.min.js") {
+				scripts[i].remove();
 			}
-		});
+		}
 	}, 1000);
 }
 
@@ -456,7 +467,7 @@ function createCalendar(type) {
 	exitModalBtn.appendChild(exitIcon);
 
 	// removes the modal on click
-	exitModalBtn.addEventListener("click", () => removeModal());
+	exitModalBtn.addEventListener("click", removeModal);
 
 	// top border
 	const topBorder = document.createElement("div");
@@ -512,13 +523,13 @@ function createCalendar(type) {
 	cancelBtn.setAttribute("type", "button");
 	cancelBtn.setAttribute("data-dismiss", "modal");
 	cancelBtn.innerHTML = "Avbryt";
-	cancelBtn.addEventListener("click", () => removeModal());
+	cancelBtn.addEventListener("click", removeModal);
 
 	const confirmBtn = document.createElement("button");
 	confirmBtn.className = "btn calendarConfirm";
 	confirmBtn.setAttribute("type", "button");
 	confirmBtn.innerHTML = "Bekreft";
-	confirmBtn.addEventListener("click", () => setTime());
+	confirmBtn.addEventListener("click", setTime);
 
 	const errorMsg = document.createElement("p");
 	errorMsg.id = "calendarError";
@@ -548,9 +559,9 @@ function createCalendar(type) {
 function removeModal() {
 	setTimeout(function() {
 		const modals = document.querySelectorAll(".modal");
-		modals.forEach(modal =>  {
-			modal.remove();
-		});
+		for (var i = 0; i < modals.length; i++) {
+			modals[i].remove();
+		}
 		
 		currentMonth =  new Date().getMonth() + 2;
 		currentYear = new Date().getFullYear();
@@ -568,9 +579,9 @@ let mode;
 function loadCalendar() {
 	// removes all old elements before recreating
 	const oldCalender = document.querySelectorAll(".calendarContainer");
-	oldCalender.forEach(ele => {
-		ele.remove();
-	});
+	for (var i = 0; i < oldCalender.length; i++) {
+		oldCalender[i].remove();
+	}
 
 	const parent = document.querySelector(".modal-body");
 	const calendarContainer = document.createElement("div");
@@ -681,9 +692,9 @@ function selectDate() {
 // remove active dates
 function removeActive() {
 	const activeDays = document.querySelectorAll(".activeDay");
-	activeDays.forEach(ele => {
-		ele.classList.remove("activeDay");
-	});
+	for (var i = 0; i < activeDays.length; i++) {
+		activeDays[i].classList.remove("activeDay");
+	}
 }
 
 // init and display slider values
