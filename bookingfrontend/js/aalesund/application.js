@@ -358,9 +358,18 @@ function addStyleSheets() {
 // vars to hold selected input
 let selectedInputStart;
 let selectedInputEnd;
+let dateContainers = [];
+let currentContainer;
 function openCalendar() {
 	// determine wich calendar is opened by usings its ID as identifier | start OR end
 	let calendarType = this.id.split("_"); // this line needs to be changed if the ID of the inputs are modified
+
+	// add container to array
+	currentContainer = this.parentElement.parentElement;
+	if (!dateContainers.includes(this.parentElement.parentElement)) {
+		dateContainers.push(this.parentElement.parentElement);
+		console.log(dateContainers);
+	}
 	
 	if (calendarType[0] === "start") {
 		calendarType = "start";
@@ -730,6 +739,7 @@ function slider() {
 // set the selected time
 let selectedToTime = 0;
 let selectedFromTime = 0;
+let selectedDates = [];
 function setTime() {
 	// get the selected time
 	let dd = document.querySelector(".date").childNodes[0].innerHTML;
@@ -742,6 +752,7 @@ function setTime() {
 		mm = "0" + mm;
 	}
 
+	// yr, hr, min
 	const yyyy = currentYear;
 	let hour = document.querySelector("#hourSlider").value;
 	let min = document.querySelector("#minSlider").value;
@@ -769,33 +780,54 @@ function setTime() {
 	const selected = document.querySelector(".modal-title").innerHTML.split(" ")[0].toLowerCase(); // fra / til
 	const startDate = selectedInputStart;
 	const endDate = selectedInputEnd;
+	let index;
 	if (selected === "fra") {
 		selectedToTime = selectedTime;
-		console.log(selectedToTime);
-		console.log(selectedFromTime);
-		if (selectedToTime < selectedFromTime) {
-			document.querySelector("#calendarError").innerHTML = "Fra tid er mindre en til tid, vennligst velg en ny dato";
-			return;
-		}
-
-		else {
+		index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
+		if (index[0] === 0 && index[0] < index[1]) {
 			// set value
 			startDate.value = formatedDate;
-
 			if (endDate.value === "") {
 				setTimeout(function() {
 					endDate.click();
 				}, 750);
 			}
 		}
+
+		else if (index[1] < index[0]) {
+			console.log(2);
+			startDate.value = formatedDate;
+			if (endDate.value === "") {
+				setTimeout(function() {
+					endDate.click();
+				}, 750);
+			}
+		}
+
+		else {
+			console.log(3);
+			if (index[1] < index[0]) {
+				startDate.value = formatedDate;
+			}
+
+			else {
+				document.querySelector("#calendarError").innerHTML = "Fra tid er større en til tid, vennligst velg en ny dato";
+				return;
+			}
+		}
 	}
 
 	else {
-		console.log(123);
 		selectedFromTime = selectedTime;
 		if (selectedFromTime > selectedToTime) {
 			// set value
 			endDate.value = formatedDate;
+			index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
+			console.log(index);
+			if (index[0] != 0 && index[1] > index[0]) {
+				document.querySelector("#calendarError").innerHTML = "Fra tid er større en til tid, vennligst velg en ny dato";
+				return;
+			}
 
 			if (startDate.value === "") {
 				setTimeout(function() {
