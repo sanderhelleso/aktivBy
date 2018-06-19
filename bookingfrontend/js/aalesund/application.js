@@ -698,7 +698,8 @@ function loadCalendar() {
 	const minSlider = document.createElement("input");
 	minSlider.setAttribute("type", "range");
 	minSlider.setAttribute("min", 0);
-	minSlider.setAttribute("max", 59);
+	minSlider.setAttribute("max", 45);
+	minSlider.step = "15";
 	minSlider.id = "minSlider";
 
 	if (!ie) {
