@@ -77,13 +77,18 @@
     margin-left: 0 !important;
 }
 
-.calendarContainer .calendarDay {
-    width: 14.28571428571429%;
+.selectDaysCont {
+    min-height: 260px;
+}
+
+.calendarContainer .dayCont .calendarDay {
+    width: 100%;
     height: 50px;
     text-align: center;
     color: #2E2E2E;
     border: 2px solid white;
     transition: all 0.3s;
+    opacity: 0;
 }
 
 .calendarContainer .calendarDay:hover {
@@ -104,6 +109,7 @@
     border-radius: 12px;
     transition: all 0.3s;
     z-index: 1337;
+    background-color: transparent !important;
 }
 
 .calendarContainer .activeDay:hover {
@@ -116,6 +122,16 @@
 
 .calendarContainer .calendarDay .dayNr {
    margin-top: 12.5px;
+}
+
+.dayLabel {
+    width: 14.28571428571429%;
+    text-align: center;
+    font-weight: 600;
+}
+
+.dayCont {
+   width: 14.28571428571429%;
 }
 
 .year {
@@ -136,16 +152,10 @@
 }
 
 .sunday {
-    opacity: 0.5;
-    background-color: #ef5350 !important;
-    color: white !important;
+    opacity: 0.7;
+    background-color: #eeeeee !important;
+    color: #424242 !important;
     border-radius: 0;
-    float: right !important;
-    cursor: not-allowed !important;
-}
-
-.sunday:hover {
-    border-radius: 0 !important;
 }
 
 .calendarCancel {

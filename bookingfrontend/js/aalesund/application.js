@@ -407,16 +407,16 @@ let selectedInputStart;
 let selectedInputEnd;
 let dateContainers = [];
 let currentContainer;
+
+// determine wich calendar is opened by usings its ID as identifier | start OR end
+let calendarType;
 function openCalendar() {
-	// determine wich calendar is opened by usings its ID as identifier | start OR end
-	let calendarType = this.id.split("_"); // this line needs to be changed if the ID of the inputs are modified
-	console.log(123);
+	calendarType = this.id.split("_"); // this line needs to be changed if the ID of the inputs are modified
 
 	// add container to array
 	currentContainer = this.parentElement.parentElement;
 	if (!isInArray(currentContainer, dateContainers)) {
 		dateContainers.push(currentContainer);
-		console.log(dateContainers);
 	}
 	
 	if (calendarType[0] === "start") {
@@ -443,7 +443,6 @@ function openCalendar() {
 		selectedInputEnd = this;
 	}
 
-	console.log(selectedInputEnd);
 	createCalendar(calendarType);
 }
 
@@ -530,7 +529,7 @@ function createCalendar(type) {
 
 	prev.addEventListener("click", function() {
 		mode = false;
-		loadCalendar();
+		loadCalendar(selectedInputStart.value);
 	});
 
 	const next = document.createElement("button");
@@ -538,7 +537,7 @@ function createCalendar(type) {
 	next.innerHTML = "<i class='fas fa-chevron-right'></i>";
 	next.addEventListener("click", function() {
 		mode = true;
-		loadCalendar();
+		loadCalendar(selectedInputStart.value);
 	});
 
 	const month = document.createElement("h4");
@@ -588,6 +587,7 @@ function createCalendar(type) {
 	document.querySelector("body").appendChild(calendar);
 
 	// open calendar
+	calType = type;
 	loadCalendar();
 	$(calendar).modal("show");
 }
@@ -610,11 +610,18 @@ function removeModal() {
 const now = new Date();
 let currentMonth = now.getMonth() + 2;
 let currentYear = new Date().getFullYear();
+let currentSelectedMonth;
+let currentSelectedYear;
 let mode;
+let calType;
+let selectedTempDate;
+let daysArr = [];
 
 // load up the calendar and display stats
 function loadCalendar() {
+
 	// removes all old elements before recreating
+	daysArr = [];
 	const oldCalender = document.querySelectorAll(".calendarContainer");
 	for (var i = 0; i < oldCalender.length; i++) {
 		oldCalender[i].parentNode.removeChild(oldCalender[i]);
@@ -622,32 +629,88 @@ function loadCalendar() {
 
 	const parent = document.querySelector(".modal-body");
 	const calendarContainer = document.createElement("div");
-	calendarContainer.className = "calendarContainer row";
+	calendarContainer.className = "calendarContainer mainCalCont row container";
+	const calendarDaysRow = document.createElement("div");
+	calendarDaysRow.className = "calendarContainer row";
+	calendarDaysRow.style.borderTop = "none";
+	calendarDaysRow.style.marginTop = "5px";
+
+	const calendarContRow = document.createElement("div");
+	calendarContRow.className = "calendarContainer selectDaysCont row";
+
+	if (selectedTempDate === undefined || selectedTempDate === "") {
+		
+	}
+
+	else {
+		if (currentSelectedYear === undefined) {
+			const formatDate = selectedTempDate.split(" ");
+			currentSelectedYear = formatDate[0].split("/")[2];
+			currentSelectedMonth = formatDate[0].split("/")[1];
+		}
+	}
 	
 	// update year and month
 	if (mode) {
-		currentMonth++;
-		if (currentMonth === 13) {
-			currentMonth = 1;
-			currentYear++;
+		if (currentSelectedMonth === undefined) {
+			currentMonth++;
+			if (currentMonth === 13) {
+				currentMonth = 1;
+				currentYear++;
+			}
+		}
+
+		else {
+			currentSelectedMonth++;
+			if (currentSelectedMonth === 13) {
+				currentSelectedMonth = 1;
+				currentSelectedYear++;
+			}
 		}
 	}
 
 	else {
-		currentMonth--;
-		if (currentMonth === 0) {
-			currentMonth = 12;
-			currentYear--;
+		if (currentSelectedMonth === undefined) {
+			currentMonth--;
+			if (currentMonth === 0) {
+				currentMonth = 12;
+				currentYear--;
+			}
+		}
+
+		else {
+			currentSelectedMonth--;
+			if (currentSelectedMonth === 0) {
+				currentSelectedMonth = 12;
+				currentSelectedYear--;
+			}
 		}
 	}
 
 	let dayCount = 0;
 	const months = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
-	const daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
+	let daysInCurrentMonth;
+
+	// go to correct day if end mode
+	let endDate;
+	let endDateTime;
+	if (currentSelectedMonth != undefined) {
+		const formatDate = selectedTempDate.split(" ");
+		endDateTime = formatDate[1]
+		endDate = formatDate[0];
+		daysInCurrentMonth = new Date(currentSelectedYear, currentSelectedMonth, 0).getDate();
+		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentSelectedYear + "</span><br><span class='date'></span><span class='month'>" + months[currentSelectedMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
+	}
+
+	else {
+		daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
+		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
+	}
+
+	console.log(daysInCurrentMonth);
 
 	// display current month
-	document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
-
+	let daysCounter = 0;
 	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
 
 		// create day with its day number
@@ -657,38 +720,104 @@ function loadCalendar() {
 		dayNr.className = "dayNr";
 		dayNr.innerHTML = i;
 
+		// add event to the day
+		day.addEventListener("click", selectDate);
+
 		const time = new Date(currentYear, currentMonth - 1, i);
+		day.classList.add(days[time.getDay()].toLowerCase().substring(0, 3));
+		console.log(daysArr);
+
+		if (daysCounter < 1) {
+			for (let i = 0; i < days.length; i++) {
+				const daysCont = document.createElement("div");
+				daysCont.className = "dayCont";
+				daysCont.id = days[i].toLowerCase().substring(0, 3);
+				calendarContRow.appendChild(daysCont);
+	
+				const dayName = document.createElement("div");
+				dayName.className = "dayLabel";
+				dayName.innerHTML = days[i].toLowerCase().substring(0, 3);
+				calendarDaysRow.appendChild(dayName);
+			}	
+		}
+
+		daysCounter++;
 		if (days[time.getDay()].toLowerCase() === "søndag") {
 			day.classList.add("sunday");
-			day.appendChild(dayNr);
-			calendarContainer.appendChild(day);
 		}
 
 		else {
-			// add event to the day
-			day.addEventListener("click", selectDate);
-
-			// filter out the weekends
-			dayCount++;
-			if (dayCount === 6 || dayCount === 7) {
-				day.classList.add("weekend");
-				if (dayCount === 7) {
-					dayCount = 0;
+			if (selectedTempDate != undefined) {
+				const date = selectedTempDate.split(" ");
+				if (dayNr.innerHTML === date[0].split("/")[0]) {
+					dayNr.click();
 				}
 			}
 
-			//console.log(days[time.getDay()]);
+			else {
+				if (dayNr.innerHTML == now.getDate()) {
+					dayNr.click();
+				}
+			}
+		}
 
-			// append to the parent set as parameter
-			day.appendChild(dayNr);
-			if (dayNr.innerHTML == now.getDate()) {
-				dayNr.click();
-				console.log(dayNr);
+		// append to the parent set as parameter
+		day.appendChild(dayNr);
+		daysArr.push(day);
+	}
+
+	(async function loop() {
+		for (let i = 0; i < daysArr.length; i++) {
+			await new Promise(resolve => setTimeout(resolve, 1));
+			if (daysArr[i].classList.contains("man")) {
+				document.querySelector("#man").appendChild(daysArr[i]);
 			}
 
-			calendarContainer.appendChild(day);
+			setTimeout(() => {
+				if (daysArr[i].classList.contains("tir")) {
+					document.querySelector("#tir").appendChild(daysArr[i]);
+				}
+			}, 1);
+
+			setTimeout(() => {
+				if (daysArr[i].classList.contains("ons")) {
+					document.querySelector("#ons").appendChild(daysArr[i]);
+				}
+			}, 2);
+
+			setTimeout(() => {
+				if (daysArr[i].classList.contains("tor")) {
+					document.querySelector("#tor").appendChild(daysArr[i]);
+				}
+			}, 3);
+
+			setTimeout(() => {
+				if (daysArr[i].classList.contains("fre")) {
+					document.querySelector("#fre").appendChild(daysArr[i]);
+				}
+			}, 4);
+
+			setTimeout(() => {
+				if (daysArr[i].classList.contains("lør")) {
+					document.querySelector("#lør").appendChild(daysArr[i]);
+				}
+			}, 5);
+
+			setTimeout(() => {
+				if (daysArr[i].classList.contains("søn")) {
+					document.querySelector("#søn").appendChild(daysArr[i]);
+				}
+			}, 6);
+
+			setTimeout(() => {
+				// show all days
+				daysArr[i].style.opacity = "1";
+			}, 100)
 		}
-	}
+	})();
+
+	calendarContainer.appendChild(calendarDaysRow);
+	calendarContainer.appendChild(calendarContRow);		
 
 	const calendarSliders = document.createElement("div");
 	calendarSliders.className = "slideContainer";
@@ -734,27 +863,15 @@ function loadCalendar() {
 	parent.appendChild(calendarContainer);
 
 	// init slider
-	slider();
-
-	if (document.querySelector(".date").innerHTML === "") {
-		const days = document.querySelectorAll(".dayNr");
-		for (let i = 0; i < days.length; i++) {
-			console.log(days[i].innerHTML);
-			console.log((now.getDate() + 1).toString());
-			if (days[i].innerHTML === (now.getDate() + 1).toString()) {
-				days[i].parentElement.click();
-			}
-		}
-	}
+	slider(calendarType);
 }
 
 // select a date
 let selectedDay;
-const days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
+const days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 function selectDate() {
 	removeActive();
 	this.classList.add("activeDay");
-	console.log(this);
 	document.querySelector(".date").innerHTML = this.innerHTML;
 	selectedDay = parseInt(this.innerHTML.split(">")[1].split("<")[0]);
 
@@ -770,16 +887,22 @@ function removeActive() {
 }
 
 // init and display slider values
-function slider() {
-	console.log("slider");
+function slider(mode) {
 	// get elements and values
 	const hour = document.querySelector("#hourSlider");
 	const min = document.querySelector("#minSlider");
 	const output = document.querySelector(".clock");
 
 	// set values to current time
-	hour.value = now.getHours();
-	min.value = now.getMinutes();
+	if (mode === "end") {
+		hour.value = now.getHours() + 1;
+	}
+
+	else {
+		hour.value = now.getHours();
+	}
+
+	min.value = now.getMinutes() + 7.5;
 	if (hour.value < 10) {
 		output.childNodes[0].innerHTML = "0" + hour.value;
 	}
@@ -857,13 +980,30 @@ function setTime() {
 		dd = "0" + dd;
 	}
 
-	let mm = currentMonth;
-	if (mm < 10) {
-		mm = "0" + mm;
+	let mm;
+	let yyyy;
+	if (currentSelectedMonth === undefined) {
+		mm = currentMonth;
+		if (mm < 10) {
+			mm = "0" + mm;
+		}
+
+		// yr, hr, min
+		yyyy = currentYear;
 	}
 
-	// yr, hr, min
-	const yyyy = currentYear;
+	else {
+		mm = currentSelectedMonth;
+		if (mm < 10) {
+			mm = "0" + mm;
+		}
+
+		console.log(mm);
+
+		// yr, hr, min
+		yyyy = currentSelectedYear;
+	}
+
 	let hour = document.querySelector("#hourSlider").value;
 	let min = document.querySelector("#minSlider").value;
 
@@ -886,6 +1026,8 @@ function setTime() {
 
 	// formated date
 	const formatedDate = dd + "/" + mm + "/" + yyyy + " " + hour + ":" + min;
+	const setToInstant = dd + "/" + mm + "/" + yyyy + " " + (parseInt(hour) + 1) + ":" + min;
+	
 	// check for input to pass data
 	const selected = document.querySelector(".modal-title").innerHTML.split(" ")[0].toLowerCase(); // fra / til
 	const startDate = selectedInputStart;
@@ -895,27 +1037,17 @@ function setTime() {
 		selectedToTime = selectedTime;
 		index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
 		if (index[0] === 0 && index[0] < index[1]) {
+
 			// set value
 			startDate.value = formatedDate;
-			if (endDate.value === "") {
-				setTimeout(function() {
-					endDate.click();
-				}, 750);
-			}
-		}
-
-		else if (index[1] < index[0]) {
-			console.log(2);
-			startDate.value = formatedDate;
-			if (endDate.value === "") {
-				setTimeout(function() {
-					endDate.click();
-				}, 750);
-			}
+			const instantTo = selectedInputStart.parentElement.parentElement.childNodes[4].childNodes[2];
+			instantTo.value = setToInstant;
+			setTimeout(function() {
+				instantTo.click();
+			}, 750);
 		}
 
 		else {
-			console.log(3);
 			if (index[1] < index[0]) {
 				startDate.value = formatedDate;
 			}
@@ -953,6 +1085,7 @@ function setTime() {
 	}
 
 	// remove modal after setting time
+	selectedTempDate = formatedDate;
 	document.querySelector(".calendarConfirm").setAttribute("data-dismiss", "modal");
 	removeModal();
 }
