@@ -677,13 +677,15 @@ function loadCalendar() {
 				}
 			}
 
-			console.log(days[time.getDay()]);
+			//console.log(days[time.getDay()]);
 
 			// append to the parent set as parameter
 			day.appendChild(dayNr);
 			if (dayNr.innerHTML == now.getDate()) {
 				dayNr.click();
+				console.log(dayNr);
 			}
+
 			calendarContainer.appendChild(day);
 		}
 	}
@@ -732,9 +734,18 @@ function loadCalendar() {
 	parent.appendChild(calendarContainer);
 
 	// init slider
-	setTimeout(function(){
-		slider();
-	}, 1000);
+	slider();
+
+	if (document.querySelector(".date").innerHTML === "") {
+		const days = document.querySelectorAll(".dayNr");
+		for (let i = 0; i < days.length; i++) {
+			console.log(days[i].innerHTML);
+			console.log((now.getDate() + 1).toString());
+			if (days[i].innerHTML === (now.getDate() + 1).toString()) {
+				days[i].parentElement.click();
+			}
+		}
+	}
 }
 
 // select a date
@@ -743,11 +754,11 @@ const days = ["SÃ¸ndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "LÃ
 function selectDate() {
 	removeActive();
 	this.classList.add("activeDay");
+	console.log(this);
 	document.querySelector(".date").innerHTML = this.innerHTML;
 	selectedDay = parseInt(this.innerHTML.split(">")[1].split("<")[0]);
 
 	const time = new Date(currentYear, currentMonth - 1, selectedDay);
-	console.log(days[time.getDay()]);
 }
 
 // remove active dates
