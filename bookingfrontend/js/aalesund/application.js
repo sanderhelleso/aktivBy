@@ -643,11 +643,7 @@ function loadCalendar() {
 
 	let dayCount = 0;
 	const months = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
-
 	const daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
-
-	console.log(currentMonth);
-	console.log(currentYear);
 
 	// display current month
 	document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
@@ -661,24 +657,35 @@ function loadCalendar() {
 		dayNr.className = "dayNr";
 		dayNr.innerHTML = i;
 
-		// add event to the day
-		day.addEventListener("click", selectDate);
+		const time = new Date(currentYear, currentMonth - 1, i);
+		if (days[time.getDay()].toLowerCase() === "søndag") {
+			day.classList.add("sunday");
+			day.appendChild(dayNr);
+			calendarContainer.appendChild(day);
+		}
 
-		// filter out the weekends
-		dayCount++;
-		if (dayCount === 6 || dayCount === 7) {
-			day.classList.add("weekend");
-			if (dayCount === 7) {
-				dayCount = 0;
+		else {
+			// add event to the day
+			day.addEventListener("click", selectDate);
+
+			// filter out the weekends
+			dayCount++;
+			if (dayCount === 6 || dayCount === 7) {
+				day.classList.add("weekend");
+				if (dayCount === 7) {
+					dayCount = 0;
+				}
 			}
-		}
 
-		// append to the parent set as parameter
-		day.appendChild(dayNr);
-		if (dayNr.innerHTML == now.getDate()) {
-			dayNr.click();
+			console.log(days[time.getDay()]);
+
+			// append to the parent set as parameter
+			day.appendChild(dayNr);
+			if (dayNr.innerHTML == now.getDate()) {
+				dayNr.click();
+			}
+			calendarContainer.appendChild(day);
 		}
-		calendarContainer.appendChild(day);
 	}
 
 	const calendarSliders = document.createElement("div");
@@ -725,14 +732,22 @@ function loadCalendar() {
 	parent.appendChild(calendarContainer);
 
 	// init slider
-	slider();
+	setTimeout(function(){
+		slider();
+	}, 1000);
 }
 
 // select a date
+let selectedDay;
+const days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 function selectDate() {
 	removeActive();
 	this.classList.add("activeDay");
 	document.querySelector(".date").innerHTML = this.innerHTML;
+	selectedDay = parseInt(this.innerHTML.split(">")[1].split("<")[0]);
+
+	const time = new Date(currentYear, currentMonth - 1, selectedDay);
+	console.log(days[time.getDay()]);
 }
 
 // remove active dates
