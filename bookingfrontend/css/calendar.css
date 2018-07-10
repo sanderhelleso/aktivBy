@@ -81,6 +81,11 @@
     min-height: 260px;
 }
 
+.date h5 {
+    transition: all 0.3s;
+    opacity: 0;
+}
+
 .calendarContainer .dayCont .calendarDay {
     width: 100%;
     height: 50px;

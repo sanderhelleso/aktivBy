@@ -406,6 +406,7 @@ function isInArray(value, array) {
 let selectedInputStart;
 let selectedInputEnd;
 let dateContainers = [];
+let selects = [];
 let currentContainer;
 
 // determine wich calendar is opened by usings its ID as identifier | start OR end
@@ -418,6 +419,11 @@ function openCalendar() {
 	if (!isInArray(currentContainer, dateContainers)) {
 		dateContainers.push(currentContainer);
 	}
+
+	console.log(currentContainer.querySelectorAll("input"));
+	selectedInputStart = currentContainer.querySelectorAll("input")[0];
+	selectedInputEnd = currentContainer.querySelectorAll("input")[1];
+	selects.push(selectedInputStart, selectedInputEnd);
 	
 	if (calendarType[0] === "start") {
 		calendarType = "start";
@@ -427,20 +433,14 @@ function openCalendar() {
 
 	else if (calendarType[0] === "end") {
 		calendarType = "end";
-		selectedInputStart = this.parentElement.parentElement.childNodes[2].childNodes[2];
-		selectedInputEnd = this;
 	}
 
 	else if (calendarType[1] === "start") {
 		calendarType = "start";
-		selectedInputStart = this;
-		selectedInputEnd = this.parentElement.parentElement.childNodes[2].childNodes[1];
 	}
 
 	else if (calendarType[1] === "end") {
 		calendarType = "end";
-		selectedInputStart = this.parentElement.parentElement.childNodes[1].childNodes[1];
-		selectedInputEnd = this;
 	}
 
 	createCalendar(calendarType);
@@ -529,7 +529,7 @@ function createCalendar(type) {
 
 	prev.addEventListener("click", function() {
 		mode = false;
-		loadCalendar(selectedInputStart.value);
+		loadCalendar("prev");
 	});
 
 	const next = document.createElement("button");
@@ -537,7 +537,7 @@ function createCalendar(type) {
 	next.innerHTML = "<i class='fas fa-chevron-right'></i>";
 	next.addEventListener("click", function() {
 		mode = true;
-		loadCalendar(selectedInputStart.value);
+		loadCalendar("next");
 	});
 
 	const month = document.createElement("h4");
@@ -600,7 +600,7 @@ function removeModal() {
 			modals[i].parentNode.removeChild(modals[i]);
 		}
 		
-		currentMonth =  new Date().getMonth() + 2;
+		currentMonth =  new Date().getMonth() + 1;
 		currentYear = new Date().getFullYear();
 		mode = false;
 	}, 500);
@@ -608,7 +608,7 @@ function removeModal() {
 
 // vars for date selection
 const now = new Date();
-let currentMonth = now.getMonth() + 2;
+let currentMonth = now.getMonth() + 1;
 let currentYear = new Date().getFullYear();
 let currentSelectedMonth;
 let currentSelectedYear;
@@ -618,7 +618,7 @@ let selectedTempDate;
 let daysArr = [];
 
 // load up the calendar and display stats
-function loadCalendar() {
+function loadCalendar(val) {
 
 	// removes all old elements before recreating
 	daysArr = [];
@@ -651,7 +651,8 @@ function loadCalendar() {
 	}
 	
 	// update year and month
-	if (mode) {
+	console.log(val);
+	if (val === "next") {
 		if (currentSelectedMonth === undefined) {
 			currentMonth++;
 			if (currentMonth === 13) {
@@ -669,7 +670,8 @@ function loadCalendar() {
 		}
 	}
 
-	else {
+	else if (val == "prev") {
+		console.log(currentSelectedMonth);
 		if (currentSelectedMonth === undefined) {
 			currentMonth--;
 			if (currentMonth === 0) {
@@ -679,6 +681,7 @@ function loadCalendar() {
 		}
 
 		else {
+			console.log(121);
 			currentSelectedMonth--;
 			if (currentSelectedMonth === 0) {
 				currentSelectedMonth = 12;
@@ -699,18 +702,19 @@ function loadCalendar() {
 		endDateTime = formatDate[1]
 		endDate = formatDate[0];
 		daysInCurrentMonth = new Date(currentSelectedYear, currentSelectedMonth, 0).getDate();
-		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentSelectedYear + "</span><br><span class='date'></span><span class='month'>" + months[currentSelectedMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
+		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentSelectedYear + "</span><br><span class='date'><h5 class='dayNr'>" + now.getDate() + "</h5></span><span class='month'>" + months[currentSelectedMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
 	}
 
 	else {
 		daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
-		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
+		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'><h5 class='dayNr'>" + now.getDate() + "</h5></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
 	}
 
-	console.log(daysInCurrentMonth);
+	console.log(currentMonth, currentSelectedMonth);
 
 	// display current month
 	let daysCounter = 0;
+	console.log(now);
 	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
 
 		// create day with its day number
@@ -723,9 +727,8 @@ function loadCalendar() {
 		// add event to the day
 		day.addEventListener("click", selectDate);
 
-		const time = new Date(currentYear, currentMonth - 1, i);
+		const time = new Date(currentYear, currentMonth - 1, i - 1);
 		day.classList.add(days[time.getDay()].toLowerCase().substring(0, 3));
-		console.log(daysArr);
 
 		if (daysCounter < 1) {
 			for (let i = 0; i < days.length; i++) {
@@ -746,73 +749,62 @@ function loadCalendar() {
 			day.classList.add("sunday");
 		}
 
-		else {
-			if (selectedTempDate != undefined) {
-				const date = selectedTempDate.split(" ");
-				if (dayNr.innerHTML === date[0].split("/")[0]) {
-					dayNr.click();
-				}
-			}
-
-			else {
-				if (dayNr.innerHTML == now.getDate()) {
-					dayNr.click();
-				}
-			}
-		}
-
 		// append to the parent set as parameter
 		day.appendChild(dayNr);
 		daysArr.push(day);
 	}
 
+	// fill calendar with days of current month
 	(async function loop() {
-		for (let i = 0; i < daysArr.length; i++) {
+		for (let x = 0; x < days.length; x++) {
+			const currentDay = days[x].substring(0, 3).toLowerCase();
+			let increment = 0;
 			await new Promise(resolve => setTimeout(resolve, 1));
-			if (daysArr[i].classList.contains("man")) {
-				document.querySelector("#man").appendChild(daysArr[i]);
+			for (let i = 0; i < daysArr.length; i++) {
+				setTimeout(() => {
+					if (daysArr[i].classList.contains(currentDay)) {
+						document.querySelector(`#${currentDay}`).appendChild(daysArr[i]);
+
+						if (calendarType === "start") {
+							if (selectedInputStart.value != "") {
+								const date = selectedInputStart.value.split(" ");
+								if (daysArr[i].childNodes[0].innerHTML == date[0].split("/")[0]) {
+									daysArr[i].click();
+								}
+							}
+							
+							else {
+								if (daysArr[i].childNodes[0].innerHTML == now.getDate()) {
+									daysArr[i].click();
+								}
+							}
+						}
+
+						else {
+							if (selectedInputEnd.value != "") {
+								const date = selectedInputEnd.value.split(" ");
+								if (daysArr[i].childNodes[0].innerHTML == date[0].split("/")[0]) {
+									daysArr[i].click();
+								}
+							}
+							
+							else {
+								if (daysArr[i].childNodes[0].innerHTML == now.getDate()) {
+									daysArr[i].click();
+								}
+							}
+						}
+					}
+				}, increment);
+				increment++;
+
+				// fadein animation
+				setTimeout(() => {
+					// show all days
+					daysArr[i].style.opacity = "1";
+					document.querySelector(".date").childNodes[0].style.opacity = "1";
+				}, 100);
 			}
-
-			setTimeout(() => {
-				if (daysArr[i].classList.contains("tir")) {
-					document.querySelector("#tir").appendChild(daysArr[i]);
-				}
-			}, 1);
-
-			setTimeout(() => {
-				if (daysArr[i].classList.contains("ons")) {
-					document.querySelector("#ons").appendChild(daysArr[i]);
-				}
-			}, 2);
-
-			setTimeout(() => {
-				if (daysArr[i].classList.contains("tor")) {
-					document.querySelector("#tor").appendChild(daysArr[i]);
-				}
-			}, 3);
-
-			setTimeout(() => {
-				if (daysArr[i].classList.contains("fre")) {
-					document.querySelector("#fre").appendChild(daysArr[i]);
-				}
-			}, 4);
-
-			setTimeout(() => {
-				if (daysArr[i].classList.contains("lør")) {
-					document.querySelector("#lør").appendChild(daysArr[i]);
-				}
-			}, 5);
-
-			setTimeout(() => {
-				if (daysArr[i].classList.contains("søn")) {
-					document.querySelector("#søn").appendChild(daysArr[i]);
-				}
-			}, 6);
-
-			setTimeout(() => {
-				// show all days
-				daysArr[i].style.opacity = "1";
-			}, 100)
 		}
 	})();
 
@@ -864,18 +856,21 @@ function loadCalendar() {
 
 	// init slider
 	slider(calendarType);
+	mode = undefined;
 }
 
 // select a date
 let selectedDay;
+let selectedDayFrom;
+let selectedDayTo;
+
 const days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 function selectDate() {
 	removeActive();
 	this.classList.add("activeDay");
 	document.querySelector(".date").innerHTML = this.innerHTML;
+	document.querySelector(".date").childNodes[0].style.opacity = "1";
 	selectedDay = parseInt(this.innerHTML.split(">")[1].split("<")[0]);
-
-	const time = new Date(currentYear, currentMonth - 1, selectedDay);
 }
 
 // remove active dates
@@ -982,6 +977,8 @@ function setTime() {
 
 	let mm;
 	let yyyy;
+
+	console.log(currentMonth, currentSelectedMonth);
 	if (currentSelectedMonth === undefined) {
 		mm = currentMonth;
 		if (mm < 10) {
@@ -993,11 +990,12 @@ function setTime() {
 	}
 
 	else {
-		mm = currentSelectedMonth;
+		mm = parseInt(currentSelectedMonth);
 		if (mm < 10) {
+			console.log(123);
 			mm = "0" + mm;
 		}
-
+		
 		console.log(mm);
 
 		// yr, hr, min
@@ -1010,7 +1008,9 @@ function setTime() {
 	// check for valid date
 	const sec = now.getSeconds();
 	const selectedTime = new Date(yyyy, currentMonth - 1, dd, hour, min, sec + 1).getTime();
+	const currentTime = new Date(now.getFullYear(), now.getMonth(), now.getDay(), now.getMinutes(), now.getMinutes(), sec + 1).getTime()
 
+	console.log(selectedTime, now.getTime());
 	if (selectedTime < now.getTime()) {
 		document.querySelector("#calendarError").innerHTML = "Man ikke kan ikke booke tilbake i tid, vennligst velg en ny dato";
 		return;
@@ -1033,23 +1033,25 @@ function setTime() {
 	const startDate = selectedInputStart;
 	const endDate = selectedInputEnd;
 	let index;
-	if (selected === "fra") {
+	console.log(selects);
+	if (calendarType === "start") {
+		console.log(123);
 		selectedToTime = selectedTime;
 		index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
-		if (index[0] === 0 && index[0] < index[1]) {
-
+		console.log(selectedFromTime, selectedToTime);
+		if (index[0] == 0 && index[0] < index[1]) {
 			// set value
-			startDate.value = formatedDate;
-			const instantTo = selectedInputStart.parentElement.parentElement.childNodes[4].childNodes[2];
-			instantTo.value = setToInstant;
-			setTimeout(function() {
-				instantTo.click();
-			}, 750);
+			selects[0].value = formatedDate;
+
+			if (selects[1].value === "") {
+				selects[1].value = setToInstant;
+			}
+			console.log(selectedInputEnd);
 		}
 
 		else {
 			if (index[1] < index[0]) {
-				startDate.value = formatedDate;
+				selects[0].value = formatedDate;
 			}
 
 			else {
@@ -1062,26 +1064,22 @@ function setTime() {
 	else {
 		selectedFromTime = selectedTime;
 		if (selectedFromTime > selectedToTime) {
-			// set value
-			endDate.value = formatedDate;
-			index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
+			index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedToTime, selectedFromTime];
 			console.log(index);
-			if (index[0] != 0 && index[1] > index[0]) {
+			if (index[0] != 0 && index[0] > index[1]) {
 				document.querySelector("#calendarError").innerHTML = "Fra tid er større en til tid, vennligst velg en ny dato";
 				return;
 			}
 
-			if (startDate.value === "") {
-				setTimeout(function() {
-					startDate.click();
-				}, 750);
-			}
+			// set value
+			selects[1].value = formatedDate;
 		}
 
 		else {
 			document.querySelector("#calendarError").innerHTML = "Til tid er mindre en fra tid, vennligst velg en ny dato";
 			return;
 		}
+
 	}
 
 	// remove modal after setting time
