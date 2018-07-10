@@ -7,37 +7,35 @@ var regulations_select_all = "";
  * returns version of IE or false, if browser is not Internet Explorer
  */
 function detectIE() {
-    var ua = window.navigator.userAgent;
+	var ua = window.navigator.userAgent;
 
-    var msie = ua.indexOf('MSIE ');
-    if (msie > 0) {
-        // IE 10 or older => return version number
-        return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-    }
+	var msie = ua.indexOf('MSIE ');
+	if (msie > 0) {
+		// IE 10 or older => return version number
+		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+	}
 
-    var trident = ua.indexOf('Trident/');
-    if (trident > 0) {
-        // IE 11 => return version number
-        var rv = ua.indexOf('rv:');
-        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-    }
+	var trident = ua.indexOf('Trident/');
+	if (trident > 0) {
+		// IE 11 => return version number
+		var rv = ua.indexOf('rv:');
+		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+	}
 
-    var edge = ua.indexOf('Edge/');
-    if (edge > 0) {
-       // Edge (IE 12+) => return version number
-       return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-    }
+	var edge = ua.indexOf('Edge/');
+	if (edge > 0) {
+		// Edge (IE 12+) => return version number
+		return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+	}
 
-    // other browser
-    return false;
+	// other browser
+	return false;
 }
 
 const ie = detectIE();
 
-$(document).ready(function ()
-{
-	$("#start_date").change(function ()
-	{
+$(document).ready(function () {
+	$("#start_date").change(function () {
 		$("#end_date").val($("#start_date").val());
 	});
 
@@ -57,8 +55,8 @@ $(document).ready(function ()
 	});*/
 
 	// add event to add date
-	document.querySelector("#add-date-link").addEventListener("click", function() {
-		setTimeout(function() {
+	document.querySelector("#add-date-link").addEventListener("click", function () {
+		setTimeout(function () {
 			cloneInputs();
 		}, 100);
 	});
@@ -69,33 +67,28 @@ $(document).ready(function ()
 	// remove jQuery calendar onload
 	removeCalendar();
 
-	JqueryPortico.autocompleteHelper(phpGWLink('bookingfrontend/', {menuaction: 'bookingfrontend.uibuilding.index'}, true), 'field_building_name', 'field_building_id', 'building_container');
+	JqueryPortico.autocompleteHelper(phpGWLink('bookingfrontend/', { menuaction: 'bookingfrontend.uibuilding.index' }, true), 'field_building_name', 'field_building_id', 'building_container');
 
-	$("#field_activity").change(function ()
-	{
+	$("#field_activity").change(function () {
 		var building_id = $('#field_building_id').val();
-		if (building_id)
-		{
+		if (building_id) {
 			populateTableChkResources(building_id, initialSelection);
 		}
 
-		var oArgs = {menuaction: 'bookingfrontend.uiapplication.get_activity_data', activity_id: $(this).val()};
+		var oArgs = { menuaction: 'bookingfrontend.uiapplication.get_activity_data', activity_id: $(this).val() };
 		var requestUrl = phpGWLink('bookingfrontend/', oArgs, true);
 
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
 			url: requestUrl,
-			success: function (data)
-			{
+			success: function (data) {
 				var html_agegroups = '';
 				var html_audience = '';
 
-				if (data != null)
-				{
+				if (data != null) {
 					var agegroups = data.agegroups;
-					for (var i = 0; i < agegroups.length; ++i)
-					{
+					for (var i = 0; i < agegroups.length; ++i) {
 						html_agegroups += "<tr>";
 						html_agegroups += "<th>" + agegroups[i]['name'] + "</th>";
 						html_agegroups += "<td>";
@@ -110,15 +103,11 @@ $(document).ready(function ()
 
 					var audience = data.audience;
 					var checked = '';
-					for (var i = 0; i < audience.length; ++i)
-					{
+					for (var i = 0; i < audience.length; ++i) {
 						checked = '';
-						if (initialAudience)
-						{
-							for (var j = 0; j < initialAudience.length; ++j)
-							{
-								if (audience[i]['id'] == initialAudience[j])
-								{
+						if (initialAudience) {
+							for (var j = 0; j < initialAudience.length; ++j) {
+								if (audience[i]['id'] == initialAudience[j]) {
 									checked = " checked='checked'";
 								}
 							}
@@ -138,46 +127,37 @@ $(document).ready(function ()
 
 });
 
-$(window).on('load', function()
-{
+$(window).on('load', function () {
 	building_id = $('#field_building_id').val();
 	regulations_select_all = initialAcceptAllTerms;
 	resources = initialSelection;
-	if (building_id)
-	{
+	if (building_id) {
 		populateTableChkResources(building_id, initialSelection);
 		populateTableChkRegulations(building_id, initialDocumentSelection, resources);
 		building_id_selection = building_id;
 	}
-	$("#field_building_name").on("autocompleteselect", function (event, ui)
-	{
+	$("#field_building_name").on("autocompleteselect", function (event, ui) {
 		var building_id = ui.item.value;
 		var selection = [];
 		var resources = [];
-		if (building_id != building_id_selection)
-		{
+		if (building_id != building_id_selection) {
 			populateTableChkResources(building_id, initialSelection);
 			populateTableChkRegulations(building_id, selection, resources);
 			building_id_selection = building_id;
 		}
 	});
-	$('#resources_container').on('change', '.chkRegulations', function ()
-	{
+	$('#resources_container').on('change', '.chkRegulations', function () {
 		var resources = new Array();
-		$('#resources_container input.chkRegulations[name="resources[]"]:checked').each(function ()
-		{
+		$('#resources_container input.chkRegulations[name="resources[]"]:checked').each(function () {
 			resources.push($(this).val());
 		});
 		var selection = [];
 		populateTableChkRegulations(building_id_selection, selection, resources);
 	});
 
-	if (!$.formUtils)
-	{
-		$('#application_form').submit(function (e)
-		{
-			if (!validate_documents())
-			{
+	if (!$.formUtils) {
+		$('#application_form').submit(function (e) {
+			if (!validate_documents()) {
 				e.preventDefault();
 				alert(lang['You must accept to follow all terms and conditions of lease first.']);
 			}
@@ -185,17 +165,13 @@ $(window).on('load', function()
 	}
 });
 
-if ($.formUtils)
-{
+if ($.formUtils) {
 	$.formUtils.addValidator({
 		name: 'regulations_documents',
-		validatorFunction: function (value, $el, config, languaje, $form)
-		{
+		validatorFunction: function (value, $el, config, languaje, $form) {
 			var n = 0;
-			$('#regulation_documents input[name="accepted_documents[]"]').each(function ()
-			{
-				if (!$(this).is(':checked'))
-				{
+			$('#regulation_documents input[name="accepted_documents[]"]').each(function () {
+				if (!$(this).is(':checked')) {
 					n++;
 				}
 			});
@@ -208,13 +184,10 @@ if ($.formUtils)
 
 	$.formUtils.addValidator({
 		name: 'target_audience',
-		validatorFunction: function (value, $el, config, languaje, $form)
-		{
+		validatorFunction: function (value, $el, config, languaje, $form) {
 			var n = 0;
-			$('#audience input[name="audience[]"]').each(function ()
-			{
-				if ($(this).is(':checked'))
-				{
+			$('#audience input[name="audience[]"]').each(function () {
+				if ($(this).is(':checked')) {
 					n++;
 				}
 			});
@@ -227,13 +200,10 @@ if ($.formUtils)
 
 	$.formUtils.addValidator({
 		name: 'number_participants',
-		validatorFunction: function (value, $el, config, languaje, $form)
-		{
+		validatorFunction: function (value, $el, config, languaje, $form) {
 			var n = 0;
-			$('#agegroup_tbody input').each(function ()
-			{
-				if ($(this).val() != "" && $(this).val() > 0)
-				{
+			$('#agegroup_tbody input').each(function () {
+				if ($(this).val() != "" && $(this).val() > 0) {
 					n++;
 				}
 			});
@@ -246,13 +216,10 @@ if ($.formUtils)
 
 	$.formUtils.addValidator({
 		name: 'application_resources',
-		validatorFunction: function (value, $el, config, language, $form)
-		{
+		validatorFunction: function (value, $el, config, language, $form) {
 			var n = 0;
-			$('#resources_container table input[name="resources[]"]').each(function ()
-			{
-				if ($(this).is(':checked'))
-				{
+			$('#resources_container table input[name="resources[]"]').each(function () {
+				if ($(this).is(':checked')) {
 					n++;
 				}
 			});
@@ -265,13 +232,11 @@ if ($.formUtils)
 
 	$.formUtils.addValidator({
 		name: 'customer_identifier',
-		validatorFunction: function (value, $el, config, languaje, $form)
-		{
+		validatorFunction: function (value, $el, config, languaje, $form) {
 			var v = false;
 			var customer_ssn = $('#field_customer_ssn').val();
 			var customer_organization_number = $('#field_customer_organization_number').val();
-			if (customer_ssn != "" || customer_organization_number != "")
-			{
+			if (customer_ssn != "" || customer_organization_number != "") {
 				v = true;
 			}
 			return v;
@@ -282,34 +247,26 @@ if ($.formUtils)
 
 	$.formUtils.addValidator({
 		name: 'application_dates',
-		validatorFunction: function (value, $el, config, languaje, $form)
-		{
+		validatorFunction: function (value, $el, config, languaje, $form) {
 			var n = 0;
-			if ($('input[name="from_[]"]').length == 0 || $('input[name="from_[]"]').length == 0)
-			{
+			if ($('input[name="from_[]"]').length == 0 || $('input[name="from_[]"]').length == 0) {
 				return false;
 			}
-			$('input[name="from_[]"]').each(function ()
-			{
-				if ($(this).val() == "")
-				{
+			$('input[name="from_[]"]').each(function () {
+				if ($(this).val() == "") {
 					$($(this).addClass("error").css("border-color", "red"));
 					n++;
 				}
-				else
-				{
+				else {
 					$($(this).removeClass("error").css("border-color", ""));
 				}
 			});
-			$('input[name="to_[]"]').each(function ()
-			{
-				if ($(this).val() == "")
-				{
+			$('input[name="to_[]"]').each(function () {
+				if ($(this).val() == "") {
 					$($(this).addClass("error").css("border-color", "red"));
 					n++;
 				}
-				else
-				{
+				else {
 					$($(this).removeClass("error").css("border-color", ""));
 				}
 			});
@@ -320,15 +277,11 @@ if ($.formUtils)
 		errorMessageKey: ''
 	});
 }
-else
-{
-	function validate_documents()
-	{
+else {
+	function validate_documents() {
 		var n = 0;
-		$('#regulation_documents input[name="accepted_documents[]"]').each(function ()
-		{
-			if (!$(this).is(':checked'))
-			{
+		$('#regulation_documents input[name="accepted_documents[]"]').each(function () {
+			if (!$(this).is(':checked')) {
 				n++;
 			}
 		});
@@ -339,7 +292,6 @@ else
 
 function cloneInputs() {
 	// removes the event listeners from inputs by replacing them with a clone
-	//document.querySelector("#add-date-link").remove();
 	const inputs = document.querySelectorAll(".date-container");
 	for (var i = 0; i < inputs.length; i++) {
 		const getTime = inputs[i].querySelectorAll("input");
@@ -362,7 +314,7 @@ function cloneInputs() {
 
 function removeCalendar() {
 	// 1s delay due to elements are loaded via php include scripts
-	setTimeout(function(){
+	setTimeout(function () {
 		// replace the inputs with cloned elements of itself to remove stubborn events
 		cloneInputs();
 		// removes old calender @TODO: disable the jQuery calendar to start in the first place
@@ -374,8 +326,11 @@ function removeCalendar() {
 		// removes the jQuery script
 		var scripts = document.querySelectorAll("script");
 		for (var i = 0; i < scripts.length; i++) {
-			if (scripts[i].src  === "http://aktivby.alesund.kommune.no/phpgwapi/js/datetimepicker/js/jquery.datetimepicker.full.min.js") {
-				scripts[i].parentNode.removeChild(scripts[i]);
+			const splitSrc = scripts[i].src.split(".");
+			for (let x = 0; x < splitSrc.length; x++) {
+				if (splitSrc[x] === "datetimepicker") {
+					scripts[i].parentNode.removeChild(scripts[i]);
+				}
 			}
 		}
 	}, 1000);
@@ -383,12 +338,7 @@ function removeCalendar() {
 
 function addStyleSheets() {
 	// add calendar CSS file
-	const calendarCSS = document.createElement("link");
-	calendarCSS.type = "text/css";
-	calendarCSS.rel = "stylesheet";
-	calendarCSS.href = "http://aktivby.alesund.kommune.no/bookingfrontend/css/calendar.css";
 	let links = document.querySelectorAll("link");
-	document.querySelector("head").insertBefore(calendarCSS, links[links.length - 1]);
 
 	// add font awesome
 	const fontAwsome = document.createElement("link");
@@ -420,11 +370,10 @@ function openCalendar() {
 		dateContainers.push(currentContainer);
 	}
 
-	console.log(currentContainer.querySelectorAll("input"));
 	selectedInputStart = currentContainer.querySelectorAll("input")[0];
 	selectedInputEnd = currentContainer.querySelectorAll("input")[1];
 	selects.push(selectedInputStart, selectedInputEnd);
-	
+
 	if (calendarType[0] === "start") {
 		calendarType = "start";
 		selectedInputStart = this;
@@ -467,7 +416,7 @@ function createCalendar(type) {
 	// calendar header
 	const calendarHeader = document.createElement("div");
 	calendarHeader.className = "modal-header container";
-	
+
 	// heading of the calendar
 	const calendarHeading = document.createElement("h1");
 	calendarHeading.className = "modal-title";
@@ -527,7 +476,7 @@ function createCalendar(type) {
 	prev.className = "prevMonth";
 	prev.innerHTML = "<i class='fas fa-chevron-left'></i>";
 
-	prev.addEventListener("click", function() {
+	prev.addEventListener("click", function () {
 		mode = false;
 		loadCalendar("prev");
 	});
@@ -535,7 +484,7 @@ function createCalendar(type) {
 	const next = document.createElement("button");
 	next.className = "nextMonth";
 	next.innerHTML = "<i class='fas fa-chevron-right'></i>";
-	next.addEventListener("click", function() {
+	next.addEventListener("click", function () {
 		mode = true;
 		loadCalendar("next");
 	});
@@ -594,13 +543,13 @@ function createCalendar(type) {
 
 //removes the element from the DOM after 0.5 sec to preserve fade animation
 function removeModal() {
-	setTimeout(function() {
+	setTimeout(function () {
 		const modals = document.querySelectorAll(".modal");
 		for (var i = 0; i < modals.length; i++) {
 			modals[i].parentNode.removeChild(modals[i]);
 		}
-		
-		currentMonth =  new Date().getMonth() + 1;
+
+		currentMonth = new Date().getMonth() + 1;
 		currentYear = new Date().getFullYear();
 		mode = false;
 	}, 500);
@@ -639,7 +588,7 @@ function loadCalendar(val) {
 	calendarContRow.className = "calendarContainer selectDaysCont row";
 
 	if (selectedTempDate === undefined || selectedTempDate === "") {
-		
+
 	}
 
 	else {
@@ -649,9 +598,8 @@ function loadCalendar(val) {
 			currentSelectedMonth = formatDate[0].split("/")[1];
 		}
 	}
-	
+
 	// update year and month
-	console.log(val);
 	if (val === "next") {
 		if (currentSelectedMonth === undefined) {
 			currentMonth++;
@@ -710,11 +658,8 @@ function loadCalendar(val) {
 		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentYear + "</span><br><span class='date'><h5 class='dayNr'>" + now.getDate() + "</h5></span><span class='month'>" + months[currentMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
 	}
 
-	console.log(currentMonth, currentSelectedMonth);
-
 	// display current month
 	let daysCounter = 0;
-	console.log(now);
 	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
 
 		// create day with its day number
@@ -736,12 +681,12 @@ function loadCalendar(val) {
 				daysCont.className = "dayCont";
 				daysCont.id = days[i].toLowerCase().substring(0, 3);
 				calendarContRow.appendChild(daysCont);
-	
+
 				const dayName = document.createElement("div");
 				dayName.className = "dayLabel";
 				dayName.innerHTML = days[i].toLowerCase().substring(0, 3);
 				calendarDaysRow.appendChild(dayName);
-			}	
+			}
 		}
 
 		daysCounter++;
@@ -755,61 +700,58 @@ function loadCalendar(val) {
 	}
 
 	// fill calendar with days of current month
-	(async function loop() {
-		for (let x = 0; x < days.length; x++) {
-			const currentDay = days[x].substring(0, 3).toLowerCase();
-			let increment = 0;
-			await new Promise(resolve => setTimeout(resolve, 1));
-			for (let i = 0; i < daysArr.length; i++) {
-				setTimeout(() => {
-					if (daysArr[i].classList.contains(currentDay)) {
-						document.querySelector(`#${currentDay}`).appendChild(daysArr[i]);
+	for (let x = 0; x < days.length; x++) {
+		const currentDay = days[x].substring(0, 3).toLowerCase();
+		let increment = 0;
+		for (let i = 0; i < daysArr.length; i++) {
+			const index = daysArr[i];
+			setTimeout(function() {
+				if (hasClass(index, currentDay)) {
+					document.querySelector("#" + currentDay).appendChild(index);
 
-						if (calendarType === "start") {
-							if (selectedInputStart.value != "") {
-								const date = selectedInputStart.value.split(" ");
-								if (daysArr[i].childNodes[0].innerHTML == date[0].split("/")[0]) {
-									daysArr[i].click();
-								}
-							}
-							
-							else {
-								if (daysArr[i].childNodes[0].innerHTML == now.getDate()) {
-									daysArr[i].click();
-								}
+					if (calendarType === "start") {
+						if (selectedInputStart.value != "") {
+							const date = selectedInputStart.value.split(" ");
+							if (index.childNodes[0].innerHTML == date[0].split("/")[0]) {
+								index.click();
 							}
 						}
 
 						else {
-							if (selectedInputEnd.value != "") {
-								const date = selectedInputEnd.value.split(" ");
-								if (daysArr[i].childNodes[0].innerHTML == date[0].split("/")[0]) {
-									daysArr[i].click();
-								}
-							}
-							
-							else {
-								if (daysArr[i].childNodes[0].innerHTML == now.getDate()) {
-									daysArr[i].click();
-								}
+							if (index.childNodes[0].innerHTML == now.getDate()) {
+								index.click();
 							}
 						}
 					}
-				}, increment);
-				increment++;
 
-				// fadein animation
-				setTimeout(() => {
-					// show all days
-					daysArr[i].style.opacity = "1";
-					document.querySelector(".date").childNodes[0].style.opacity = "1";
-				}, 100);
-			}
+					else {
+						if (selectedInputEnd.value != "") {
+							const date = selectedInputEnd.value.split(" ");
+							if (index.childNodes[0].innerHTML == date[0].split("/")[0]) {
+								index.click();
+							}
+						}
+
+						else {
+							if (index.childNodes[0].innerHTML == now.getDate()) {
+								index.click();
+							}
+						}
+					}
+				}
+			}, increment);
+			increment++;
+
+			// fadein animation
+			setTimeout(function() {
+				index.style.opacity = "1";
+				document.querySelector(".date").childNodes[0].style.opacity = "1";
+			}, 100);
 		}
-	})();
+	}
 
 	calendarContainer.appendChild(calendarDaysRow);
-	calendarContainer.appendChild(calendarContRow);		
+	calendarContainer.appendChild(calendarContRow);
 
 	const calendarSliders = document.createElement("div");
 	calendarSliders.className = "slideContainer";
@@ -844,7 +786,7 @@ function loadCalendar(val) {
 
 	const minLabel = document.createElement("p");
 	minLabel.innerHTML = "Minutt";
-	
+
 	calendarSliders.appendChild(sliderHeading);
 	calendarSliders.appendChild(hourLabel);
 	calendarSliders.appendChild(hourSlider);
@@ -857,6 +799,11 @@ function loadCalendar(val) {
 	// init slider
 	slider(calendarType);
 	mode = undefined;
+}
+
+function hasClass(element, className) {
+	console.log(element, className);
+    return element.className && new RegExp("(^|\\s)" + className + "(\\s|$)").test(element.className);
 }
 
 // select a date
@@ -918,18 +865,18 @@ function slider(mode) {
 	// display selected hours
 	// check if IE browser
 	if (!ie) {
-		hour.oninput = function() {
+		hour.oninput = function () {
 			if (hour.value < 10) {
 				output.childNodes[0].innerHTML = "0" + hour.value;
 			}
-	
+
 			else {
 				output.childNodes[0].innerHTML = hour.value;
 			}
 		}
 
 		// display selected mins
-		min.oninput = function() {
+		min.oninput = function () {
 			if (min.value < 10) {
 				output.childNodes[2].innerHTML = "0" + min.value;
 			}
@@ -941,18 +888,18 @@ function slider(mode) {
 	}
 
 	else {
-		hour.onchange = function() {
+		hour.onchange = function () {
 			if (hour.value < 10) {
 				output.childNodes[0].innerHTML = "0" + hour.value;
 			}
-	
+
 			else {
 				output.childNodes[0].innerHTML = hour.value;
 			}
 		}
 
 		// display selected mins
-		min.onchange = function() {
+		min.onchange = function () {
 			if (min.value < 10) {
 				output.childNodes[2].innerHTML = "0" + min.value;
 			}
@@ -978,7 +925,6 @@ function setTime() {
 	let mm;
 	let yyyy;
 
-	console.log(currentMonth, currentSelectedMonth);
 	if (currentSelectedMonth === undefined) {
 		mm = currentMonth;
 		if (mm < 10) {
@@ -992,11 +938,8 @@ function setTime() {
 	else {
 		mm = parseInt(currentSelectedMonth);
 		if (mm < 10) {
-			console.log(123);
 			mm = "0" + mm;
 		}
-		
-		console.log(mm);
 
 		// yr, hr, min
 		yyyy = currentSelectedYear;
@@ -1010,7 +953,6 @@ function setTime() {
 	const selectedTime = new Date(yyyy, currentMonth - 1, dd, hour, min, sec + 1).getTime();
 	const currentTime = new Date(now.getFullYear(), now.getMonth(), now.getDay(), now.getMinutes(), now.getMinutes(), sec + 1).getTime()
 
-	console.log(selectedTime, now.getTime());
 	if (selectedTime < now.getTime()) {
 		document.querySelector("#calendarError").innerHTML = "Man ikke kan ikke booke tilbake i tid, vennligst velg en ny dato";
 		return;
@@ -1027,18 +969,15 @@ function setTime() {
 	// formated date
 	const formatedDate = dd + "/" + mm + "/" + yyyy + " " + hour + ":" + min;
 	const setToInstant = dd + "/" + mm + "/" + yyyy + " " + (parseInt(hour) + 1) + ":" + min;
-	
+
 	// check for input to pass data
 	const selected = document.querySelector(".modal-title").innerHTML.split(" ")[0].toLowerCase(); // fra / til
 	const startDate = selectedInputStart;
 	const endDate = selectedInputEnd;
 	let index;
-	console.log(selects);
 	if (calendarType === "start") {
-		console.log(123);
 		selectedToTime = selectedTime;
 		index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
-		console.log(selectedFromTime, selectedToTime);
 		if (index[0] == 0 && index[0] < index[1]) {
 			// set value
 			selects[0].value = formatedDate;
@@ -1046,7 +985,6 @@ function setTime() {
 			if (selects[1].value === "") {
 				selects[1].value = setToInstant;
 			}
-			console.log(selectedInputEnd);
 		}
 
 		else {
@@ -1065,7 +1003,6 @@ function setTime() {
 		selectedFromTime = selectedTime;
 		if (selectedFromTime > selectedToTime) {
 			index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedToTime, selectedFromTime];
-			console.log(index);
 			if (index[0] != 0 && index[0] > index[1]) {
 				document.querySelector("#calendarError").innerHTML = "Fra tid er større en til tid, vennligst velg en ny dato";
 				return;
@@ -1084,65 +1021,64 @@ function setTime() {
 
 	// remove modal after setting time
 	selectedTempDate = formatedDate;
+	selects = [];
 	document.querySelector(".calendarConfirm").setAttribute("data-dismiss", "modal");
 	removeModal();
 }
 
-function populateTableChkResources(building_id, selection)
-{
-	var oArgs = {menuaction: 'bookingfrontend.uiresource.index_json', sort: 'name', filter_building_id: building_id, sub_activity_id: $("#field_activity").val()};
+function populateTableChkResources(building_id, selection) {
+	var oArgs = { menuaction: 'bookingfrontend.uiresource.index_json', sort: 'name', filter_building_id: building_id, sub_activity_id: $("#field_activity").val() };
 	var url = phpGWLink('bookingfrontend/', oArgs, true);
 	var container = 'resources_container';
-	var colDefsResources = [{label: '', object: [{type: 'input', attrs: [
-						{name: 'type', value: 'checkbox'}, {name: 'name', value: 'resources[]'}, {name: 'class', value: 'chkRegulations'}
-					]}
-			], value: 'id', checked: selection}, {key: 'name', label: lang['Name']}, {key: 'type', label: lang['Resource Type']}
+	var colDefsResources = [{
+		label: '', object: [{
+			type: 'input', attrs: [
+				{ name: 'type', value: 'checkbox' }, { name: 'name', value: 'resources[]' }, { name: 'class', value: 'chkRegulations' }
+			]
+		}
+		], value: 'id', checked: selection
+	}, { key: 'name', label: lang['Name'] }, { key: 'type', label: lang['Resource Type'] }
 	];
 	populateTableResources(url, container, colDefsResources);
 }
 
-function populateTableChkRegulations(building_id, selection, resources)
-{
-    var url = phpGWLink('bookingfrontend/', {menuaction: 'booking.uidocument_view.regulations', sort: 'name'}, true) + '&owner[]=building::' + building_id;
-	for (var r in resources)
-	{
+function populateTableChkRegulations(building_id, selection, resources) {
+	var url = phpGWLink('bookingfrontend/', { menuaction: 'booking.uidocument_view.regulations', sort: 'name' }, true) + '&owner[]=building::' + building_id;
+	for (var r in resources) {
 		url += '&owner[]=resource::' + resources[r];
 	}
 	var container = 'regulation_documents';
-	var colDefsRegulations = [{label: lang['Accepted'], object: [
-				{type: 'input', attrs: [
-						{name: 'type', value: 'checkbox'}, {name: 'name', value: 'accepted_documents[]'}
-					]}
-			], value: 'id', checked: selection}, {key: 'name', label: lang['Document'], formatter: genericLink}
+	var colDefsRegulations = [{
+		label: lang['Accepted'], object: [
+			{
+				type: 'input', attrs: [
+					{ name: 'type', value: 'checkbox' }, { name: 'name', value: 'accepted_documents[]' }
+				]
+			}
+		], value: 'id', checked: selection
+	}, { key: 'name', label: lang['Document'], formatter: genericLink }
 	];
-	if (regulations_select_all)
-	{
-		colDefsRegulations[0]['object'][0]['attrs'].push({name: 'checked', value: 'checked'});
+	if (regulations_select_all) {
+		colDefsRegulations[0]['object'][0]['attrs'].push({ name: 'checked', value: 'checked' });
 	}
 	regulations_select_all = false;
 	populateTableRegulations(url, container, colDefsRegulations);
 }
 
-function populateTableResources(url, container, colDefs)
-{
-	if (typeof tableClass !== 'undefined')
-	{
+function populateTableResources(url, container, colDefs) {
+	if (typeof tableClass !== 'undefined') {
 		createTable(container, url, colDefs, 'results', tableClass);
 	}
-	else
-	{
+	else {
 		createTable(container, url, colDefs, 'results', 'table table-hover table-borderless');
 	}
 }
 
-function populateTableRegulations(url, container, colDefs)
-{
-	if (typeof tableClass !== 'undefined')
-	{
+function populateTableRegulations(url, container, colDefs) {
+	if (typeof tableClass !== 'undefined') {
 		createTable(container, url, colDefs, '', tableClass);
 	}
-	else
-	{
+	else {
 		createTable(container, url, colDefs, '', 'table table-hover table-borderless');
 	}
 

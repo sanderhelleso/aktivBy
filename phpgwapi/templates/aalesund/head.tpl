@@ -21,8 +21,6 @@ and open the template in the editor.
        
         {css}
 
-        <script type="text/javascript" src="js/main.js"></script>        
-
     </head>
     <body class="">
         <nav class="navbar navbar-expand-md">
