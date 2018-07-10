@@ -4,6 +4,7 @@ body {
     font-size: 16px;
 }
 
+/*
 .jumbotron {
   position: relative;
   background: url("../img/header2.jpg") no-repeat center center;
@@ -16,7 +17,7 @@ body {
   border-radius: 0;
   margin-bottom: 0;
 }
-
+*/
 @media screen and (max-width: 560px) {
     .jumbotron {
         display: none;
@@ -54,6 +55,7 @@ a:hover{
 
 .header-text a{
     color: white;
+    font-family: Raleway;
 }
 
 .header-text a:hover{
@@ -81,6 +83,9 @@ a:hover{
     padding: 0;
 }
 
+.navbar-toggler{
+	margin-left: 15px;
+}
 
 .btn-circle {
     width: 50px;
@@ -350,4 +355,29 @@ dl.proplist{
 
 .card dt{
     display: none;
+}
+
+.calender-free{
+	background-color: #73D67A !important;
+	cursor: pointer;
+}
+
+.calender-allocation{
+	background-color: #E24646 !important;
+}
+
+.calender-booking{
+	background-color: #FF6D6D !important;
+}
+
+.calender-event{
+	background-color: #ff8282 !important;
+}
+
+.calender-closed{
+	background-color: #E8E8E8 !important;
+}
+
+table td,table th{
+    border: 1px solid #FFFFFF !important;
 }
