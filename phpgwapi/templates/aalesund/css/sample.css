@@ -357,31 +357,6 @@ dl.proplist{
     display: none;
 }
 
-/*.calender-free{
-	background-color: #73D67A !important;
-	cursor: pointer;
-}
-
-.calender-allocation{
-	background-color: #E24646 !important;
-}
-
-.calender-booking{
-	background-color: #FF6D6D !important;
-}
-
-.calender-event{
-	background-color: #ff8282 !important;
-}
-
-.calender-closed{
-	background-color: #E8E8E8 !important;
-}
-
-table td,table th{
-    border: 1px solid #FFFFFF !important;
-}*/
-
 .application-group {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
     padding-bottom: 20px !important;
@@ -440,7 +415,7 @@ th{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-#schedule_container table .table-bordered {
+.table-bordered {
     border: none !important;
 }
 
