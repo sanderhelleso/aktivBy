@@ -318,7 +318,7 @@ function cloneInputs() {
 				}
 
 				else {
-					selectedToTime = new Date(currentSelectedYear, currentSelectedMonth, formatDate[0].split("/")[0], formatDate[1].split(":")[0], formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
+					selectedToTime = new Date(currentSelectedYear, currentSelectedMonth, formatDate[0].split("/")[0], parseInt(formatDate[1].split(":")[0]) + 5, formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
 				}
 
 				selectedDates[0] = [selectedFromTime, selectedToTime];
@@ -1009,7 +1009,7 @@ function setTime() {
 
 	// check for valid date
 	const sec = now.getSeconds();
-	const selectedTime = new Date(yyyy, currentMonth - 1, dd, hour, min, sec + 1).getTime();
+	const selectedTime = new Date(yyyy, currentMonth, dd, hour, min, sec + 1).getTime();
 	const currentTime = new Date(now.getFullYear(), now.getMonth(), now.getDay(), now.getMinutes(), now.getMinutes(), sec + 1).getTime()
 
 	if (selectedTime < now.getTime()) {
@@ -1035,9 +1035,8 @@ function setTime() {
 	const endDate = selectedInputEnd;
 	let index;
 
-	console.log(selectedFromTime, selectedToTime);
 	if (calendarType === "start") {
-		selectedToTime = selectedTime - 86400000;
+		selectedToTime = selectedTime;
 		index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
 		if (index[0] == 0 && index[0] < index[1]) {
 			// set value
@@ -1080,7 +1079,7 @@ function setTime() {
 
 	}
 
-	console.log(selectedToTime, selectedFromTime);
+	console.log(selectedFromTime, selectedToTime);
 
 	// remove modal after setting time
 	selectedTempDate = formatedDate;
