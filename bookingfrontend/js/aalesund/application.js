@@ -47,12 +47,6 @@ $(document).ready(function () {
 			getInputs[x].setAttribute("disabled", true);
 		}
 	}
-	/*inputs.forEach(ele => {
-		let getInputs = ele.querySelectorAll("input");
-		getInputs.forEach(ele => {
-			ele.setAttribute("disabled", true);
-		});
-	});*/
 
 	// add event to add date
 	document.querySelector("#add-date-link").addEventListener("click", function () {
@@ -290,6 +284,8 @@ else {
 	}
 }
 
+let currFrom;
+let currTo;
 function cloneInputs() {
 	// removes the event listeners from inputs by replacing them with a clone
 	const inputs = document.querySelectorAll(".date-container");
@@ -302,12 +298,35 @@ function cloneInputs() {
 			oldEle.classList.add("cloned");
 
 			const newEle = oldEle.cloneNode(true);
+			newEle.readOnly = true;
+			newEle.style.backgroundColor = "white";
 
 			// add new event to the cloned element
 			newEle.addEventListener("click", openCalendar);
 
 			// replace old element with its clone
 			oldEle.parentNode.replaceChild(newEle, oldEle);
+
+			if (newEle.value != "") {
+				console.log(selectedToTime, selectedFromTime);
+				console.log(newEle.value);
+				const formatDate = newEle.value.split(" ");
+				currentSelectedYear = formatDate[0].split("/")[2];
+				currentSelectedMonth = formatDate[0].split("/")[1];
+				console.log(currentSelectedYear, currentSelectedMonth);
+
+				if (currFrom === undefined) {
+					currFrom = new Date(currentSelectedYear, currentSelectedMonth - 1, formatDate[0].split("/")[0], formatDate[1].split(":")[0], formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
+					selectedFromTime = currFrom;
+					console.log(21222222222222);
+				}
+
+				else {
+					selectedToTime = new Date(currentSelectedYear, currentSelectedMonth - 1, formatDate[0].split("/")[0], formatDate[1].split(":")[0], formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
+				}
+
+				console.log(selectedFromTime, selectedToTime);
+			}
 		}
 	}
 }
@@ -392,7 +411,10 @@ function openCalendar() {
 		calendarType = "end";
 	}
 
+	selectedTempDate = this.value;
 	createCalendar(calendarType);
+
+	console.log(selects[0].value, selects[1].value);
 }
 
 function createCalendar(type) {
@@ -619,7 +641,6 @@ function loadCalendar(val) {
 	}
 
 	else if (val == "prev") {
-		console.log(currentSelectedMonth);
 		if (currentSelectedMonth === undefined) {
 			currentMonth--;
 			if (currentMonth === 0) {
@@ -629,7 +650,6 @@ function loadCalendar(val) {
 		}
 
 		else {
-			console.log(121);
 			currentSelectedMonth--;
 			if (currentSelectedMonth === 0) {
 				currentSelectedMonth = 12;
@@ -708,7 +728,6 @@ function loadCalendar(val) {
 			setTimeout(function() {
 				if (hasClass(index, currentDay)) {
 					document.querySelector("#" + currentDay).appendChild(index);
-
 					if (calendarType === "start") {
 						if (selectedInputStart.value != "") {
 							const date = selectedInputStart.value.split(" ");
@@ -802,7 +821,6 @@ function loadCalendar(val) {
 }
 
 function hasClass(element, className) {
-	console.log(element, className);
     return element.className && new RegExp("(^|\\s)" + className + "(\\s|$)").test(element.className);
 }
 
@@ -1018,6 +1036,8 @@ function setTime() {
 		}
 
 	}
+
+	console.log(selectedToTime, selectedFromTime);
 
 	// remove modal after setting time
 	selectedTempDate = formatedDate;
