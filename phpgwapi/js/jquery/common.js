@@ -1802,6 +1802,13 @@ function frontendScheduleDateColumn(data, col, date)
 			{
 				var resource = $(this).parent().attr('resource');
 				schedule.showInfo(data[k]['info_url'], resource);
+
+				// close modal on overlay click
+				setTimeout(function() {
+					document.querySelector(".ui-widget-overlay").addEventListener("click", function() {
+						document.querySelector(".ui-dialog-titlebar-close").click();
+					});
+				}, 100);
 			}
 		}
 		);
