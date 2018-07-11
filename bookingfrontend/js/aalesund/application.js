@@ -307,9 +307,7 @@ function cloneInputs() {
 			// replace old element with its clone
 			oldEle.parentNode.replaceChild(newEle, oldEle);
 
-			if (newEle.value != "") {
-				console.log(selectedToTime, selectedFromTime);
-				console.log(newEle.value);
+			if (newEle.value != "" && document.querySelectorAll(".date-container").length == 1) {
 				const formatDate = newEle.value.split(" ");
 				currentSelectedYear = formatDate[0].split("/")[2];
 				currentSelectedMonth = formatDate[0].split("/")[1];
@@ -324,6 +322,7 @@ function cloneInputs() {
 				}
 
 				selectedDates[0] = [selectedFromTime, selectedToTime];
+				console.log(selectedFromTime, selectedToTime);
 			}
 		}
 	}
@@ -412,9 +411,6 @@ function openCalendar() {
 
 	selectedTempDate = this.value;
 	createCalendar(calendarType);
-
-	console.log(selects[0].value, selects[1].value);
-	console.log(selects);
 }
 
 function createCalendar(type) {
@@ -447,12 +443,10 @@ function createCalendar(type) {
 	calendarIntro.className = "calendarIntro";
 	if (type === "start") {
 		calendarHeading.innerHTML = "Fra dato";
-		selectedToTime = 0;
 	}
 
 	else {
 		calendarHeading.innerHTML = "Til dato";
-		selectedFromTime = 0;
 	}
 
 	// append intro to the heading as a span
@@ -981,6 +975,7 @@ let selectedToTime = 0;
 let selectedFromTime = 0;
 let selectedDates = [];
 function setTime() {
+
 	// get the selected time
 	let dd = document.querySelector(".date").childNodes[0].innerHTML;
 	if (dd < 10) {
@@ -1040,8 +1035,10 @@ function setTime() {
 	const startDate = selectedInputStart;
 	const endDate = selectedInputEnd;
 	let index;
+
+	console.log(selectedFromTime, selectedToTime);
 	if (calendarType === "start") {
-		selectedToTime = selectedTime;
+		selectedToTime = selectedTime - 86400000;
 		index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedFromTime, selectedToTime];
 		if (index[0] == 0 && index[0] < index[1]) {
 			// set value
