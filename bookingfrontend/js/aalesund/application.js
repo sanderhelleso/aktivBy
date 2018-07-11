@@ -313,19 +313,17 @@ function cloneInputs() {
 				const formatDate = newEle.value.split(" ");
 				currentSelectedYear = formatDate[0].split("/")[2];
 				currentSelectedMonth = formatDate[0].split("/")[1];
-				console.log(currentSelectedYear, currentSelectedMonth);
 
 				if (currFrom === undefined) {
-					currFrom = new Date(currentSelectedYear, currentSelectedMonth - 1, formatDate[0].split("/")[0], formatDate[1].split(":")[0], formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
+					currFrom = new Date(currentSelectedYear, currentSelectedMonth, formatDate[0].split("/")[0], formatDate[1].split(":")[0], formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
 					selectedFromTime = currFrom;
-					console.log(21222222222222);
 				}
 
 				else {
-					selectedToTime = new Date(currentSelectedYear, currentSelectedMonth - 1, formatDate[0].split("/")[0], formatDate[1].split(":")[0], formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
+					selectedToTime = new Date(currentSelectedYear, currentSelectedMonth, formatDate[0].split("/")[0], formatDate[1].split(":")[0], formatDate[1].split(":")[0], now.getSeconds() + 1).getTime();
 				}
 
-				console.log(selectedFromTime, selectedToTime);
+				selectedDates[0] = [selectedFromTime, selectedToTime];
 			}
 		}
 	}
@@ -391,7 +389,8 @@ function openCalendar() {
 
 	selectedInputStart = currentContainer.querySelectorAll("input")[0];
 	selectedInputEnd = currentContainer.querySelectorAll("input")[1];
-	selects.push(selectedInputStart, selectedInputEnd);
+	selects[0] = selectedInputStart;
+	selects[1] = selectedInputEnd;
 
 	if (calendarType[0] === "start") {
 		calendarType = "start";
@@ -415,6 +414,7 @@ function openCalendar() {
 	createCalendar(calendarType);
 
 	console.log(selects[0].value, selects[1].value);
+	console.log(selects);
 }
 
 function createCalendar(type) {
@@ -847,6 +847,7 @@ function removeActive() {
 }
 
 // init and display slider values
+let firstSlide;
 function slider(mode) {
 	// get elements and values
 	const hour = document.querySelector("#hourSlider");
@@ -862,7 +863,7 @@ function slider(mode) {
 		hour.value = now.getHours();
 	}
 
-	min.value = now.getMinutes() + 7.5;
+	min.value = now.getMinutes() + 8;
 	if (hour.value < 10) {
 		output.childNodes[0].innerHTML = "0" + hour.value;
 	}
@@ -918,6 +919,52 @@ function slider(mode) {
 
 		// display selected mins
 		min.onchange = function () {
+			if (min.value < 10) {
+				output.childNodes[2].innerHTML = "0" + min.value;
+			}
+
+			else {
+				output.childNodes[2].innerHTML = min.value;
+			}
+		}
+	}
+
+	if (mode === "end") {
+		if (selects[1].value != "") {
+			hour.value = parseInt(selects[1].value.split(" ")[1].split(":")[0]);
+			min.value = parseInt(selects[1].value.split(" ")[1].split(":")[1]);
+
+			if (hour.value < 10) {
+				output.childNodes[0].innerHTML = "0" + hour.value;
+			}
+
+			else {
+				output.childNodes[0].innerHTML = hour.value;
+			}
+
+			if (min.value < 10) {
+				output.childNodes[2].innerHTML = "0" + min.value;
+			}
+
+			else {
+				output.childNodes[2].innerHTML = min.value;
+			}
+		}
+	}
+
+	else {
+		if (selects[0].value != "") {
+			hour.value = parseInt(selects[0].value.split(" ")[1].split(":")[0]);
+			min.value = parseInt(selects[0].value.split(" ")[1].split(":")[1]);
+
+			if (hour.value < 10) {
+				output.childNodes[0].innerHTML = "0" + hour.value;
+			}
+
+			else {
+				output.childNodes[0].innerHTML = hour.value;
+			}
+
 			if (min.value < 10) {
 				output.childNodes[2].innerHTML = "0" + min.value;
 			}
