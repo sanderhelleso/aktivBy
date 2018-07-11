@@ -322,7 +322,6 @@ function cloneInputs() {
 				}
 
 				selectedDates[0] = [selectedFromTime, selectedToTime];
-				console.log(selectedFromTime, selectedToTime);
 			}
 		}
 	}
