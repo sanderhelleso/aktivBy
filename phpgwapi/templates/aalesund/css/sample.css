@@ -382,6 +382,22 @@ table td,table th{
     border: 1px solid #FFFFFF !important;
 }*/
 
+.application-group {
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+    padding-bottom: 20px !important;
+    border-radius: 0 !important;
+}
+
+.application-group .heading {
+    padding-bottom: 10px;
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 35px;
+}
+  
+
 .calender-free{
 	background-color: #45eba5 !important;
 	cursor: pointer;
@@ -403,7 +419,7 @@ table td,table th{
 	background-color: #e0e0e0 !important;
 }
 
-table th{
+th{
     border: 0px solid #FFFFFF !important;
 }
 
@@ -411,24 +427,24 @@ table th{
     background-color: #f5f5f5 !important;
 }
 
-thead {
+#schedule_container table thead {
     margin-bottom: 200px;
 }
 
-thead th {
+#schedule_container table thead th {
     border: none !important;
 }
 
-table {
+#schedule_container table {
     background-color: #f5f5f5 !important;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.table-bordered {
+#schedule_container table .table-bordered {
     border: none !important;
 }
 
-td {
+#schedule_container table td {
     border: 0.1px solid #FFFFFF !important;
     border-right: none !important;
     border-bottom: none !important;
@@ -547,4 +563,3 @@ td {
     background: #212121;
     opacity: 0.5;
 }
-  
