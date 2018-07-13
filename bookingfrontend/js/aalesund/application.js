@@ -1053,7 +1053,7 @@ function setTime() {
 			}
 
 			else {
-				document.querySelector("#calendarError").innerHTML = "Fra tid er større en til tid, vennligst velg en ny dato";
+				document.querySelector("#calendarError").innerHTML = "«Fra tid» er større enn «Til tid», vennligst velg nytt klokkeslett for «Fra tid»";
 				return;
 			}
 		}
@@ -1064,7 +1064,7 @@ function setTime() {
 		if (selectedFromTime > selectedToTime) {
 			index = selectedDates[dateContainers.indexOf(currentContainer)] = [selectedToTime, selectedFromTime];
 			if (index[0] != 0 && index[0] > index[1]) {
-				document.querySelector("#calendarError").innerHTML = "Fra tid er større en til tid, vennligst velg en ny dato";
+				document.querySelector("#calendarError").innerHTML = "«Fra tid» er større enn «Til tid», vennligst velg nytt klokkeslett for «Fra tid».";
 				return;
 			}
 
@@ -1073,7 +1073,7 @@ function setTime() {
 		}
 
 		else {
-			document.querySelector("#calendarError").innerHTML = "Til tid er mindre en fra tid, vennligst velg en ny dato";
+			document.querySelector("#calendarError").innerHTML = "«Til tid» er mindre enn «Fra tid», vennligst velg nytt klokkeslett for «Til tid».";
 			return;
 		}
 
