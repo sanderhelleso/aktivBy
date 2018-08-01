@@ -691,10 +691,22 @@ function loadCalendar(val) {
 
 		if (daysCounter < 1) {
 			for (let i = 0; i < days.length; i++) {
-				if (i <= 5) {
+				if (i <= 7) {
+					
 					const daysCont = document.createElement("div");
 					daysCont.className = "col-lg-12 row weekCont";
-					daysCont.id = "week" + (i + 1);
+
+					if (i === 0) {
+						daysCont.id = "month" + (parseInt(currentSelectedMonth) - 1);
+					}
+
+					else if (i === 6) {
+						daysCont.id = "month" + (parseInt(currentSelectedMonth) + 1);
+					}
+
+					else {
+						daysCont.id = "week" + (i);
+					}
 					calendarContRow.appendChild(daysCont);
 				}
 
@@ -721,12 +733,13 @@ function loadCalendar(val) {
 		let increment = 0;
 
 		for (let i = 1; i < daysArr.length - 1; i++) {
-				/*console.log(date.toString() + '\nis in week ' +
-				getISOWeekInMonth(date).week + ' of month ' +
-				getISOWeekInMonth(date).month);*/
 
 				const date = new Date(currentSelectedYear, currentSelectedMonth - 1, i);
 				const prevMonthLastWeekDays = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
+
+				/*console.log(date.toString() + '\nis in week ' +
+				getISOWeekInMonth(date).week + ' of month ' +
+				getISOWeekInMonth(date).month);*/
 				
 				/*if (getISOWeekInMonth(prevMonthLastWeekDays).week === 4 && parseInt(currentSelectedMonth) - 1 == date.getMonth()) {
 					const test = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
@@ -739,9 +752,19 @@ function loadCalendar(val) {
 			const index = daysArr[i];
 
 			setTimeout(function() {
-				document.querySelector("#week" + (getISOWeekInMonth(date).week)).appendChild(index);
-				console.log(document.querySelectorAll(".sunday")[0]);
 
+				//console.log(parseInt(getISOWeekInMonth(date).month), parseInt(currentSelectedMonth) - 1);
+				if (parseInt(getISOWeekInMonth(date).month) === parseInt(currentSelectedMonth) - 1) {
+					document.querySelector("#month" + getISOWeekInMonth(date).month).appendChild(index);
+				}
+
+				else if (parseInt(getISOWeekInMonth(date).month) === parseInt(currentSelectedMonth) + 1) {
+					document.querySelector("#month" + getISOWeekInMonth(date).month).appendChild(index);
+				}
+
+				else {
+					document.querySelector("#week" + getISOWeekInMonth(date).week).appendChild(index);
+				}
 
 					if (calendarType === "start") {
 						if (selectedInputStart.value != "") {
@@ -772,6 +795,7 @@ function loadCalendar(val) {
 						}
 					}
 				}
+
 			}, increment);
 			increment++;
 
@@ -782,6 +806,33 @@ function loadCalendar(val) {
 			}, 100);
 		}
 	}
+
+	// push days into correct order
+	setTimeout(function() {
+		for (let n = 0; n < parseInt(7 - document.querySelectorAll(".sunday")[0].childNodes[0].innerHTML); n++) {
+			if (document.querySelector("#month" + (currentSelectedMonth - 1)).childElementCount != 7) {
+				const emptyDay = document.createElement("div");
+				emptyDay.className = "calendarDay";
+				document.querySelector("#month" + (currentSelectedMonth - 1)).insertBefore(emptyDay, document.querySelector("#month" + (currentSelectedMonth - 1)).childNodes[0]);
+			}
+
+			// resort sundays
+			document.querySelector("#month" + (currentSelectedMonth - 1)).appendChild(document.querySelectorAll(".sunday")[0]);
+
+			const sundays = document.querySelectorAll(".sunday");
+			sundays.forEach(sunday => {
+
+				const calendarDays = document.querySelectorAll(".calendarDay");
+				for (let k = 0; k < calendarDays.length; k++) {
+					if (calendarDays[k].childNodes[0] != undefined) {
+						if (parseInt(calendarDays[k].childNodes[0].innerHTML) === parseInt(sunday.childNodes[0].innerHTML - 1)) {
+							calendarDays[k].parentElement.appendChild(sunday);
+						}
+					}
+				}
+			});
+		}
+	}, 150);
 
 	calendarContainer.appendChild(calendarDaysRow);
 	calendarContainer.appendChild(calendarContRow);
