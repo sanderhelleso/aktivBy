@@ -673,11 +673,11 @@ function loadCalendar(val) {
 
 	// display current month
 	let daysCounter = 0;
-	for (let i = 1; i < daysInCurrentMonth + 1; i++) {
+	for (let i = 0; i < daysInCurrentMonth + 2; i++) {
 
 		// create day with its day number
 		let day = document.createElement("div");
-		day.className = "calendarDay";
+		day.className = "calendarDay dayCont";
 		let dayNr = document.createElement("h5");
 		dayNr.className = "dayNr";
 		dayNr.innerHTML = i;
@@ -685,15 +685,18 @@ function loadCalendar(val) {
 		// add event to the day
 		day.addEventListener("click", selectDate);
 
-		const time = new Date(currentYear, currentMonth - 1, i - 1);
+		console.log(currentMonth, currentSelectedMonth);
+		const time = new Date(currentYear, currentSelectedMonth - 1, i - 1);
 		day.classList.add(days[time.getDay()].toLowerCase().substring(0, 3));
 
 		if (daysCounter < 1) {
 			for (let i = 0; i < days.length; i++) {
-				const daysCont = document.createElement("div");
-				daysCont.className = "dayCont";
-				daysCont.id = days[i].toLowerCase().substring(0, 3);
-				calendarContRow.appendChild(daysCont);
+				if (i <= 5) {
+					const daysCont = document.createElement("div");
+					daysCont.className = "col-lg-12 row weekCont";
+					daysCont.id = "week" + (i + 1);
+					calendarContRow.appendChild(daysCont);
+				}
 
 				const dayName = document.createElement("div");
 				dayName.className = "dayLabel";
@@ -716,11 +719,30 @@ function loadCalendar(val) {
 	for (let x = 0; x < days.length; x++) {
 		const currentDay = days[x].substring(0, 3).toLowerCase();
 		let increment = 0;
-		for (let i = 0; i < daysArr.length; i++) {
+
+		for (let i = 1; i < daysArr.length - 1; i++) {
+				/*console.log(date.toString() + '\nis in week ' +
+				getISOWeekInMonth(date).week + ' of month ' +
+				getISOWeekInMonth(date).month);*/
+
+				const date = new Date(currentSelectedYear, currentSelectedMonth - 1, i);
+				const prevMonthLastWeekDays = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
+				
+				/*if (getISOWeekInMonth(prevMonthLastWeekDays).week === 4 && parseInt(currentSelectedMonth) - 1 == date.getMonth()) {
+					const test = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
+					console.log(test.toString() + '\nis in week ' +
+					getISOWeekInMonth(test).week + ' of month ' +
+					getISOWeekInMonth(test).month);
+					console.log(parseInt(currentSelectedMonth) - 1);
+				}*/
+
 			const index = daysArr[i];
+
 			setTimeout(function() {
-				if (hasClass(index, currentDay)) {
-					document.querySelector("#" + currentDay).appendChild(index);
+				document.querySelector("#week" + (getISOWeekInMonth(date).week)).appendChild(index);
+				console.log(document.querySelectorAll(".sunday")[0]);
+
+
 					if (calendarType === "start") {
 						if (selectedInputStart.value != "") {
 							const date = selectedInputStart.value.split(" ");
@@ -747,7 +769,6 @@ function loadCalendar(val) {
 						else {
 							if (index.childNodes[0].innerHTML == now.getDate()) {
 								index.click();
-							}
 						}
 					}
 				}
@@ -813,9 +834,22 @@ function loadCalendar(val) {
 	mode = undefined;
 }
 
+function getISOWeekInMonth(date) {
+	// Copy date so don't affect original
+	var d = new Date(+date);
+	if (isNaN(d)) return;
+	// Move to previous Monday
+	d.setDate(d.getDate() - d.getDay() + 1);
+	// Week number is ceil date/7
+	return {month: +d.getMonth()+1,
+			week: Math.ceil(d.getDate()/7)};
+  }
+
 function hasClass(element, className) {
     return element.className && new RegExp("(^|\\s)" + className + "(\\s|$)").test(element.className);
 }
+
+let prevWeekCount = 0;
 
 // select a date
 let selectedDay;
