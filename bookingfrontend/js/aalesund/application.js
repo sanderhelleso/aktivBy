@@ -685,8 +685,8 @@ function loadCalendar(val) {
 		// add event to the day
 		day.addEventListener("click", selectDate);
 
-		console.log(currentMonth, currentSelectedMonth);
-		const time = new Date(currentYear, currentSelectedMonth - 1, i - 1);
+		//console.log(currentMonth, currentSelectedMonth);
+		const time = new Date(currentSelectedYear, currentSelectedMonth - 1, i - 1);
 		day.classList.add(days[time.getDay()].toLowerCase().substring(0, 3));
 
 		if (daysCounter < 1) {
@@ -697,7 +697,13 @@ function loadCalendar(val) {
 					daysCont.className = "col-lg-12 row weekCont";
 
 					if (i === 0) {
-						daysCont.id = "month" + (parseInt(currentSelectedMonth) - 1);
+						if ((parseInt(currentSelectedMonth) - 1) === 0) {
+							daysCont.id = "month" + 12;
+						}
+
+						else {
+							daysCont.id = "month" + (parseInt(currentSelectedMonth) - 1);
+						}
 					}
 
 					else if (i === 6) {
@@ -753,8 +759,16 @@ function loadCalendar(val) {
 
 			setTimeout(function() {
 
+				// TO FIX: SET DATA TO PREV MONTH IF 12
+
 				//console.log(parseInt(getISOWeekInMonth(date).month), parseInt(currentSelectedMonth) - 1);
-				if (parseInt(getISOWeekInMonth(date).month) === parseInt(currentSelectedMonth) - 1) {
+				//console.log(getISOWeekInMonth(date).month, getISOWeekInMonth(date).week);
+				//console.log(currentSelectedYear);
+				if (getISOWeekInMonth(date).month === 12 && getISOWeekInMonth(date).week === 5 && currentSelectedMonth === 1) {
+					document.querySelector("#month" + 12).appendChild(index);
+				}
+				
+				else if (parseInt(getISOWeekInMonth(date).month) === parseInt(currentSelectedMonth) - 1) {
 					document.querySelector("#month" + getISOWeekInMonth(date).month).appendChild(index);
 				}
 
