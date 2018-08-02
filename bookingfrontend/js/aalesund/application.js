@@ -737,9 +737,9 @@ function loadCalendar(val) {
 				const date = new Date(currentSelectedYear, currentSelectedMonth - 1, i);
 				const prevMonthLastWeekDays = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
 
-				/*console.log(date.toString() + '\nis in week ' +
+				console.log(date.toString() + '\nis in week ' +
 				getISOWeekInMonth(date).week + ' of month ' +
-				getISOWeekInMonth(date).month);*/
+				getISOWeekInMonth(date).month);
 				
 				/*if (getISOWeekInMonth(prevMonthLastWeekDays).week === 4 && parseInt(currentSelectedMonth) - 1 == date.getMonth()) {
 					const test = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
@@ -833,6 +833,20 @@ function loadCalendar(val) {
 			});
 		}
 	}, 150);
+
+	setTimeout(function() {
+		const sundays = document.querySelectorAll(".sunday");
+		const calendarDays = document.querySelectorAll(".calendarDay");
+		sundays.forEach(sunday => {
+			for (let k = 0; k < calendarDays.length; k++) {
+				if (calendarDays[k].childNodes[0] != undefined) {
+					if (parseInt(calendarDays[k].childNodes[0].innerHTML) === parseInt(sunday.childNodes[0].innerHTML - 1)) {
+						calendarDays[k].parentElement.appendChild(sunday);
+					}
+				}
+			}
+		});
+	}, 170);
 
 	calendarContainer.appendChild(calendarDaysRow);
 	calendarContainer.appendChild(calendarContRow);
