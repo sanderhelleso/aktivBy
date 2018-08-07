@@ -806,7 +806,8 @@ function loadCalendar(val) {
 		for (let n = 0; n < parseInt(7 - document.querySelectorAll(".sunday")[0].childNodes[0].innerHTML); n++) {
 			if (document.querySelector("#month" + (currentSelectedMonth - 1)).childElementCount != 7) {
 				const emptyDay = document.createElement("div");
-				emptyDay.className = "calendarDay";
+				emptyDay.className = "calendarDay disabledDay";
+				emptyDay.style.pointerEvents = 'none';
 				document.querySelector("#month" + (currentSelectedMonth - 1)).insertBefore(emptyDay, document.querySelector("#month" + (currentSelectedMonth - 1)).childNodes[0]);
 			}
 

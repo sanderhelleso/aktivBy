@@ -86,6 +86,15 @@
     opacity: 0;
 }
 
+.calendarContainer .disabledDay {
+    pointer-events: none !important;
+}
+
+.calendarContainer .disabledDay:hover {
+    border-radius: 0 !important;
+    background-color: white !important;
+}
+
 .calendarContainer .dayCont .calendarDay {
     width: 100%;
     height: 50px;
