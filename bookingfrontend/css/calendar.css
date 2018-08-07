@@ -125,18 +125,23 @@
     font-weight: 800;
 }
 
-.calendarContainer .calendarDay .dayNr {
-   margin-top: 12.5px;
-}
-
 .dayLabel {
     width: 14.28571428571429%;
     text-align: center;
     font-weight: 600;
 }
 
-.dayCont {
-   width: 14.28571428571429%;
+.calendarContainer .calendarDay .dayNr  {
+    margin-top: 12.5px;
+    text-align: center !important;
+}
+
+.calendarContainer .calendarDay {
+    width: 14.28571428571429% !important; 
+}
+
+.weekCont {
+    margin-bottom: 5px;
 }
 
 .year {

@@ -601,6 +601,7 @@ function loadCalendar(val) {
 
 	const calendarContRow = document.createElement("div");
 	calendarContRow.className = "calendarContainer selectDaysCont row";
+	calendarContRow.style.opacity = "0";
 
 	if (selectedTempDate === undefined || selectedTempDate === "") {
 
@@ -698,7 +699,7 @@ function loadCalendar(val) {
 
 					if (i === 0) {
 						if ((parseInt(currentSelectedMonth) - 1) === 0) {
-							daysCont.id = "month" + 12;
+							daysCont.id = "month" + 0;
 						}
 
 						else {
@@ -740,32 +741,15 @@ function loadCalendar(val) {
 
 		for (let i = 1; i < daysArr.length - 1; i++) {
 
-				const date = new Date(currentSelectedYear, currentSelectedMonth - 1, i);
-				const prevMonthLastWeekDays = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
-
-				console.log(date.toString() + '\nis in week ' +
-				getISOWeekInMonth(date).week + ' of month ' +
-				getISOWeekInMonth(date).month);
-				
-				/*if (getISOWeekInMonth(prevMonthLastWeekDays).week === 4 && parseInt(currentSelectedMonth) - 1 == date.getMonth()) {
-					const test = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
-					console.log(test.toString() + '\nis in week ' +
-					getISOWeekInMonth(test).week + ' of month ' +
-					getISOWeekInMonth(test).month);
-					console.log(parseInt(currentSelectedMonth) - 1);
-				}*/
-
+			const date = new Date(currentSelectedYear, currentSelectedMonth - 1, i);
+			const prevMonthLastWeekDays = new Date(currentSelectedYear, currentSelectedMonth - 2, i);
 			const index = daysArr[i];
 
 			setTimeout(function() {
-
-				// TO FIX: SET DATA TO PREV MONTH IF 12
-
-				//console.log(parseInt(getISOWeekInMonth(date).month), parseInt(currentSelectedMonth) - 1);
-				//console.log(getISOWeekInMonth(date).month, getISOWeekInMonth(date).week);
-				//console.log(currentSelectedYear);
-				if (getISOWeekInMonth(date).month === 12 && getISOWeekInMonth(date).week === 5 && currentSelectedMonth === 1) {
-					document.querySelector("#month" + 12).appendChild(index);
+				if (getISOWeekInMonth(date).month === 12 && getISOWeekInMonth(date).week === 5 || getISOWeekInMonth(date).week === 5  && currentSelectedMonth === 1) {
+					if (document.querySelector("#month0") != null) {
+						document.querySelector("#month0").appendChild(index);
+					}
 				}
 				
 				else if (parseInt(getISOWeekInMonth(date).month) === parseInt(currentSelectedMonth) - 1) {
@@ -812,17 +796,13 @@ function loadCalendar(val) {
 
 			}, increment);
 			increment++;
-
-			// fadein animation
-			setTimeout(function() {
-				index.style.opacity = "1";
-				document.querySelector(".date").childNodes[0].style.opacity = "1";
-			}, 100);
 		}
 	}
 
 	// push days into correct order
 	setTimeout(function() {
+		console.log(currentSelectedMonth - 1);
+		console.log(document.querySelector("#month" + (currentSelectedMonth - 1)));
 		for (let n = 0; n < parseInt(7 - document.querySelectorAll(".sunday")[0].childNodes[0].innerHTML); n++) {
 			if (document.querySelector("#month" + (currentSelectedMonth - 1)).childElementCount != 7) {
 				const emptyDay = document.createElement("div");
@@ -832,21 +812,8 @@ function loadCalendar(val) {
 
 			// resort sundays
 			document.querySelector("#month" + (currentSelectedMonth - 1)).appendChild(document.querySelectorAll(".sunday")[0]);
-
-			const sundays = document.querySelectorAll(".sunday");
-			sundays.forEach(sunday => {
-
-				const calendarDays = document.querySelectorAll(".calendarDay");
-				for (let k = 0; k < calendarDays.length; k++) {
-					if (calendarDays[k].childNodes[0] != undefined) {
-						if (parseInt(calendarDays[k].childNodes[0].innerHTML) === parseInt(sunday.childNodes[0].innerHTML - 1)) {
-							calendarDays[k].parentElement.appendChild(sunday);
-						}
-					}
-				}
-			});
 		}
-	}, 150);
+	}, 50);
 
 	setTimeout(function() {
 		const sundays = document.querySelectorAll(".sunday");
@@ -860,7 +827,9 @@ function loadCalendar(val) {
 				}
 			}
 		});
-	}, 170);
+
+		document.querySelector(".selectDaysCont").style.opacity = "1";
+	}, 60);
 
 	calendarContainer.appendChild(calendarDaysRow);
 	calendarContainer.appendChild(calendarContRow);
