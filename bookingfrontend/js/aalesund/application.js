@@ -48,6 +48,10 @@ $(document).ready(function () {
 		}
 	}
 
+	function daysInMonth (month, year) {
+		return new Date(year, month, 0).getDate();
+	}
+
 	// add event to add date
 	document.querySelector("#add-date-link").addEventListener("click", function () {
 		setTimeout(function () {
@@ -376,6 +380,8 @@ let currentContainer;
 
 // determine wich calendar is opened by usings its ID as identifier | start OR end
 let calendarType;
+let fromDate;
+let toDate;
 function openCalendar() {
 	calendarType = this.id.split("_"); // this line needs to be changed if the ID of the inputs are modified
 
@@ -604,7 +610,7 @@ function loadCalendar(val) {
 	calendarContRow.style.opacity = "0";
 
 	if (selectedTempDate === undefined || selectedTempDate === "") {
-
+		// some check here
 	}
 
 	else {
@@ -660,11 +666,27 @@ function loadCalendar(val) {
 	let endDate;
 	let endDateTime;
 	if (currentSelectedMonth != undefined) {
+
+		let day;
+		if (mode === "from") {
+			day = selectedInputStart.value.split("/")[0];
+		}
+
+		else {
+			day = selectedInputEnd.value.split("/")[0];
+		}
+
+		if (day < 10) {
+			day = day.split("")[1];
+		}
+
+		console.log(day);
+
 		const formatDate = selectedTempDate.split(" ");
 		endDateTime = formatDate[1]
 		endDate = formatDate[0];
 		daysInCurrentMonth = new Date(currentSelectedYear, currentSelectedMonth, 0).getDate();
-		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentSelectedYear + "</span><br><span class='date'><h5 class='dayNr'>" + now.getDate() + "</h5></span><span class='month'>" + months[currentSelectedMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
+		document.querySelector("#currentMonth").innerHTML = "<span class='year'>" + currentSelectedYear + "</span><br><span class='date'><h5 class='dayNr'>" + day + "</h5></span><span class='month'>" + months[currentSelectedMonth - 1] + "</span><br><span class='clock'><span></span><span id='timeSplitter'>:</span><span></span></span>";
 	}
 
 	else {
@@ -801,8 +823,6 @@ function loadCalendar(val) {
 
 	// push days into correct order
 	setTimeout(function() {
-		console.log(currentSelectedMonth - 1);
-		console.log(document.querySelector("#month" + (currentSelectedMonth - 1)));
 		for (let n = 0; n < parseInt(7 - document.querySelectorAll(".sunday")[0].childNodes[0].innerHTML); n++) {
 			if (document.querySelector("#month" + (currentSelectedMonth - 1)).childElementCount != 7) {
 				const emptyDay = document.createElement("div");
