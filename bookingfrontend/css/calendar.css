@@ -69,16 +69,22 @@
     margin: 0 auto;
 }
 
+.mainCalCont {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+}
+
 .calendarContainer {
     border-top: 1px solid #e0e0e0;
     margin-top: 5%;
     padding-top: 2%;
-    width: 100%;
+    width: 97%;
     margin-left: 0 !important;
 }
 
 .selectDaysCont {
     min-height: 260px;
+    width: 100%;
 }
 
 .date h5 {
@@ -103,11 +109,12 @@
     border: 2px solid white;
     transition: all 0.3s;
     opacity: 0;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .calendarContainer .calendarDay:hover {
     background-color: #eeeeee;
-    border-radius: 12px;
     cursor: pointer;
 }
 
@@ -117,10 +124,8 @@
 }
 
 .calendarContainer .activeDay {
-    border: 2px solid #66bb6a !important;
-    color: #66bb6a;
+    color: #66bb6a !important;
     font-weight: 800;
-    border-radius: 12px;
     transition: all 0.3s;
     z-index: 1337;
     background-color: transparent !important;
@@ -151,6 +156,7 @@
 
 .weekCont {
     margin-bottom: 5px;
+    padding-right: 0 !important;
 }
 
 .year {
